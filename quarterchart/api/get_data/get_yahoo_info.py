@@ -51,4 +51,4 @@ def get_financial_yahoo_info(ticker:str)-> dict:
 
 if __name__ == '__main__':
     #main('TSLA')
-    get_general_info('TSLA')
+    get_general_yahoo_info('TSLA')
