@@ -6,6 +6,17 @@ from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_
 
 
 
+def shrink_income_stmt(df):
+    return df
+
+def shrink_balance_sheet(df):
+    return df
+
+def shrink_cash_flow(df):
+    return df
+
+
+
 #Download data from Yahoo Finance and put it in the models
 def download_info(compagnieModel):
 
@@ -38,13 +49,13 @@ def download_info(compagnieModel):
         print(e)
     else:
         light_a_income_stmt = shrink_income_stmt(income_stmt)
-        light_q_income_stmt = shrink_income_stmt(income_stmt)
+        light_q_income_stmt = shrink_income_stmt(quartely_income_stmt)
 
         light_a_balance_sheet = shrink_balance_sheet(balance_sheet)
-        light_q_balance_sheet = shrink_balance_sheet(balance_sheet)
+        light_q_balance_sheet = shrink_balance_sheet(quartely_balance_sheet)
 
         light_a_cashflow = shrink_cashflow(cashflow)    
-        light_q_cashflow = shrink_cashflow(cashflow)
+        light_q_cashflow = shrink_cashflow(quartely_cashflow)
 
         comp_inc_stmt = CompagnieIncomeStatement(ticker=compagnieModel.ticker,name=compagnieModel,full_annual_income_statement=income_stmt,full_quarterly_income_statement=quarterly_income_stmt,light_annual_income_statement=light_a_income_stmt,light_quarterly_income_statement=light_q_income_stmt)
         comp_inc_stmt.save()
