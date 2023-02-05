@@ -78,7 +78,7 @@ def download_info(companieModel):
 # Create your models here.
 class Companie(models.Model):
     name = models.CharField(max_length=100,unique=True)
-    ticker = models.CharField(max_length=6)
+    ticker = models.CharField(max_length=6,unique=True)
     data_was_downloaded = models.BooleanField(default=False)
     created_at_date = models.DateTimeField(auto_now_add=True)
     image_link = models.CharField(max_length=250,default='')

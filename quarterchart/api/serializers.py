@@ -5,3 +5,8 @@ class CompanieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Companie
         fields = '__all__'
+
+class CreateCompanieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Companie
+        fields = ['name','ticker']
