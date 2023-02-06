@@ -54,7 +54,7 @@ export default function HomePage () {
                 <FormControl component="fieldset" >
                     <TextField required={true} type="text" inputRef={nameRef}  onChange={(event) => SetName(event.target.value)}/>
                     <FormHelperText >
-                        <div align="center">Filter companies by name or ticker</div>
+                        Filter companies by name or ticker
                     </FormHelperText>
                 </FormControl>
                 <Button onClick={searchCompanie} variant="contained" color="primary">Search</Button>
