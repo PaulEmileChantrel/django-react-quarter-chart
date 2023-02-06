@@ -3,12 +3,19 @@ from rest_framework import generics,status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
+from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all()
     serializer_class = CompanieSerializer
 
+class FilterCompanieView(generics.ListAPIView):
+    serializer_class = CompanieSerializer
+    def get_queryset(self):
+        return Companie.objects.filter(Q(name__icontains=self.request.query_params['name'])|Q(ticker__icontains=self.request.query_params['name']))
+
+    
 
 class CreateCompanieView(APIView):
     serializer_class = CreateCompanieSerializer

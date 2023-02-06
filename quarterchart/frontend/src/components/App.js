@@ -5,7 +5,7 @@ import ChartPage from './ChartPage';
 import CompanieInfoPage from './CompanieInfoPage';
 import {BrowserRouter as Router, Route, Routes, Link, Redirect,} from 'react-router-dom';
 
-export default function App () {
+function App () {
     
         return (<>
         
@@ -26,5 +26,4 @@ export default function App () {
 
 }
 
-const appDiv = document.getElementById('app');
-render(<App />, appDiv);
+export default App;
