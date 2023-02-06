@@ -4,5 +4,5 @@ from .views import index
 urlpatterns = [
     path('', index),
     path('chart', index),
-    path('info', index),
+    path('info/TSLA', index),
 ]
