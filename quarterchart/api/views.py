@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
-from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer
+from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all()
@@ -17,16 +17,20 @@ class FilterCompanieView(generics.ListAPIView):
         return Companie.objects.filter(Q(name__icontains=self.request.query_params['name'])|Q(ticker__icontains=self.request.query_params['name']))
 
 class GetCompanieInfo(APIView):
-    serializer_class = CompanieInfoSerializer
+    serializer_class = CompanieFullInfoSerializer
     lookup_url_kwarg = 'ticker'
 
     def get(self, request, format = None):
         ticker = request.GET.get(self.lookup_url_kwarg)
         if ticker != None:
             companie = Companie.objects.filter(ticker=ticker)
-            if len(companie) > 0:
-                data = CompanieInfoSerializer(companie[0]).data
 
+            if len(companie) > 0:
+                companie_info = CompanieInfo.objects.filter(name=companie[0])
+                data = CompanieFullInfoSerializer(companie[0]).data
+                data2 = CompanieInfoSerializer(companie_info[0]).data
+                
+                data.update(data2)
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'Ticker not found in request'},status=status.HTTP_400_BAD_REQUEST)

@@ -95,7 +95,7 @@ class Companie(models.Model):
         
 
 class CompanieInfo(models.Model):
-    name = models.ForeignKey(Companie, on_delete=models.CASCADE)
+    name = models.ForeignKey(Companie,related_name='compagnie_info', on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100)
     sector = models.CharField(max_length=100)
     summary = models.TextField()

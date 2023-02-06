@@ -12,21 +12,16 @@ class CreateCompanieSerializer(serializers.ModelSerializer):
         fields = ['name','ticker']
 
 class CompanieInfoSerializer(serializers.ModelSerializer):
-    class CompanieInfoSubSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = CompanieInfo
-            exclude = ["name"]
-    
-    companie_info = CompanieInfoSubSerializer()
     
     class Meta:
-        model =  Companie
-        fields = "__all__"
+        model =  CompanieInfo
+        fields = ['summary','sector','industry','website']
  
-    def create(self, validated_data):
-        print('ok')
-        companie_info_data = validated_data.pop('companie_info')
-        companie_instance = Companie.objects.create(**validated_data)
-        CompanieInfo.objects.create(name=companie_instance,
-                              **companie_info_data)
-        return companie_instance
+class CompanieFullInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Companie
+        fields = ['market_cap','name','ticker','companie_info','image_link']
+    
+    companie_info = CompanieInfoSerializer(read_only=True)
+    
