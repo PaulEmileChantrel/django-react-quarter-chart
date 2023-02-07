@@ -33,7 +33,7 @@ class GetCompanieInfo(APIView):
                 data.update(data2)
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
-        return Response({'Bad Request' : 'Ticker not found in request'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 class CreateCompanieView(APIView):
     serializer_class = CreateCompanieSerializer
     

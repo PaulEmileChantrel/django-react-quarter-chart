@@ -4,6 +4,6 @@ from .views import CompanieView,CreateCompanieView,FilterCompanieView,GetCompani
 urlpatterns = [
     path('', CompanieView.as_view()),
     path('add',CreateCompanieView.as_view()),
-    path('filterCompanie/',FilterCompanieView.as_view()),
-    path('get-companie-info',GetCompanieInfo.as_view()),
+    path('filterCompany/',FilterCompanieView.as_view()),
+    path('get-company-info',GetCompanieInfo.as_view()),
 ]
