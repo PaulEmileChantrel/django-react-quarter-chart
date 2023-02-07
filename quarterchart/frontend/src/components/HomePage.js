@@ -1,34 +1,44 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import  Grid  from '@material-ui/core/Grid';
+import Grid  from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField  from '@material-ui/core/TextField';  
 import FormHelperText from '@material-ui/core/FormHelperText';
-import  FormControl from '@material-ui/core/FormControl';
+import FormControl from '@material-ui/core/FormControl';
 import {Link} from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useState,useRef,useEffect} from 'react'
-
+import CompaniesList from './CompaniesList';
 
 export default function HomePage () {
-    const [name,SetName] = useState('')  
+    const [name,SetName] = useState('') 
+    const [companiesList,SetCompaniesList] = useState([])
     const nameRef = useRef() 
+    
+    
+
+    function loadCompanyList() {
+        fetch('/api').then(response => response.json())
+        .then(data => SetCompaniesList(data))
+        .catch(error => console.log(error))
+    }
     function searchCompanie(){
     
         SetName(nameRef.current.value)
-        console.log(name)
+        
 
         const requestOptions = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         };
-        fetch('/api/filterCompanie?name='+name, requestOptions).then(response => response.json()).then(data => console.log(data)).catch(error => console.log('error', error));
+        fetch('/api/filterCompany?name='+name, requestOptions).then(response => response.json()).then(data => SetCompaniesList(data)).catch(error => console.log('erroR', error));
 
     }
     useEffect(() => {
         let timerId;
+        loadCompanyList()
         if (name) {
           clearTimeout(timerId);
           timerId = setTimeout(() => {
@@ -41,7 +51,7 @@ export default function HomePage () {
       }, [name]);
 
     
-
+    
   
     return (
         <Grid container spacing={1}>
@@ -60,7 +70,7 @@ export default function HomePage () {
                 <Button onClick={searchCompanie} variant="contained" color="primary">Search</Button>
             </Grid>
             <Grid item xs={12} align="center">
-                
+                <CompaniesList companies_list={companiesList}/>
             </Grid>
         </Grid>
         

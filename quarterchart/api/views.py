@@ -7,7 +7,8 @@ from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer
 # Create your views here.
 class CompanieView(generics.ListAPIView):
-    queryset = Companie.objects.all()
+    queryset = Companie.objects.all().order_by('-market_cap')
+
     serializer_class = CompanieSerializer
 
 class FilterCompanieView(generics.ListAPIView):
@@ -15,7 +16,6 @@ class FilterCompanieView(generics.ListAPIView):
 
     def get_queryset(self):
         return Companie.objects.filter(Q(name__icontains=self.request.query_params['name'])|Q(ticker__icontains=self.request.query_params['name']))
-
 class GetCompanieInfo(APIView):
     serializer_class = CompanieFullInfoSerializer
     lookup_url_kwarg = 'ticker'

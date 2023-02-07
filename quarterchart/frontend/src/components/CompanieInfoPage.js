@@ -2,7 +2,7 @@ import React from 'react';
 import {useState,useRef,useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import  Grid  from '@material-ui/core/Grid';
-
+import formatMktCp from './formatMktCap';
 export default function CompanieInfoPage () {
     const [name,SetName] = useState('')
      
@@ -33,22 +33,7 @@ export default function CompanieInfoPage () {
 
 
     }
-    function formatMktCp(num) {
-        if (num >= 1000000000000) {//1T
-            num = Math.round(num / 10000000000)/100
-            return `${num}T`
-        }
-        else if (num >= 1000000000) {//1B
-            num = Math.round(num / 10000000)/100
-            return `${num}B`
-        }
-        else if (num >= 1000000) {//1M
-            num = Math.round(num / 1000000)/100
-            return `${num}M`}
-        else {
-            return `${num}`
-        }}
-        
+    
 
     
     return (<Grid container spacing={1}>
