@@ -104,7 +104,7 @@ class CompanieInfo(models.Model):
     last_updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name.name
+        return self.name.name +' Infos'
 class CompanieBalanceSheet(models.Model):
     name = models.ForeignKey(Companie, on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100)
@@ -113,8 +113,17 @@ class CompanieBalanceSheet(models.Model):
     light_annual_balance_sheet = PickledObjectField()
     light_quarterly_balance_sheet = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
+    
+    def full_annual_unpacked(self):
+        return u'{full_annual_balance_sheet}'.format(full_annual_balance_sheet=self.full_annual_balance_sheet)
+
+    def full_quarterly_unpacked(self):
+        return u'{full_quarterly_balance_sheet}'.format(full_quarterly_balance_sheet=self.full_quarterly_balance_sheet)
+
     def __str__(self):
-        return self.name.name
+        return self.name.name +' Balance Sheet'
+
+
 class CompanieIncomeStatement(models.Model):
     name = models.ForeignKey(Companie, on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100)
