@@ -3,6 +3,6 @@ from .views import index
 
 urlpatterns = [
     path('', index),
-    path('chart', index),
+    path('chart/<str:ticker>', index),
     path('info/<str:ticker>', index),
 ]

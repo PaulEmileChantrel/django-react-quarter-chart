@@ -33,7 +33,8 @@ def download_info(companieModel):
     else:
         
         companieModel.market_cap = market_cap
-
+        print(infos)
+        companieModel.image_link = infos['logo_link']
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']
@@ -48,7 +49,7 @@ def download_info(companieModel):
         
     except Exception as e:
         
-        print(e)
+        print('error : ',e)
     else:
         light_a_income_stmt = shrink_income_stmt(income_stmt)
         light_q_income_stmt = shrink_income_stmt(quarterly_income_stmt)
@@ -92,7 +93,7 @@ class Companie(models.Model):
 
     def save(self):
         super(Companie, self).save()
-        if not data_was_downloaded:
+        if not self.data_was_downloaded:
             result = download_info(self)
             self.data_was_downloaded = result
             super(Companie, self).save()

@@ -19,8 +19,8 @@ export default function HomePage () {
     
     
 
-    function loadCompanyList() {
-        fetch('/api').then(response => response.json())
+    async function loadCompanyList() {
+        await fetch('/api').then(response => response.json())
         .then(data => SetCompaniesList(data))
         .catch(error => console.log(error))
     }
@@ -70,7 +70,7 @@ export default function HomePage () {
                 <Button onClick={searchCompanie} variant="contained" color="primary">Search</Button>
             </Grid>
             <Grid item xs={12} align="center">
-                <CompaniesList companies_list={companiesList}/>
+                {companiesList? <CompaniesList companies_list={companiesList}/>:None}
             </Grid>
         </Grid>
         

@@ -13,7 +13,7 @@ function App () {
         <Router>
             <Routes>
                 <Route exact path="/" element={<HomePage/>}/>
-                <Route exact path="/chart" element={<ChartPage/>} />
+                <Route exact path="/chart/:ticker" element={<ChartPage/>} />
                 <Route  path="/info/:ticker" element={<CompanieInfoPage/>} />
             </Routes>
 
