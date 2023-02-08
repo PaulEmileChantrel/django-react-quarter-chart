@@ -117,7 +117,10 @@ class CompanieBalanceSheet(models.Model):
     light_annual_balance_sheet = PickledObjectField()
     light_quarterly_balance_sheet = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
-    
+    full_num_col = models.IntegerField(default=0)
+    full_num_row = models.IntegerField(default=0)
+    light_num_col = models.IntegerField(default=0)
+    light_num_row = models.IntegerField(default=0)
     def save(self):
         self.full_num_col = self.full_annual_balance_sheet.shape[1]
         self.full_num_row = self.full_annual_balance_sheet.shape[0]
