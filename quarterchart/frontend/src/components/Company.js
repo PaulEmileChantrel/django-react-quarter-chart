@@ -4,10 +4,10 @@ export default function Company({company}) {
     
     return (
         <div>
-            <a href={'/info/' + company.ticker}>
+            <a href={'/chart/' + company.ticker}>
 
                 <p>
-                    {company.ticker} ({company.ticker}) | Market Cap: {formatMktCp(company.market_cap)}
+                    {company.name} ({company.ticker}) | Market Cap: {formatMktCp(company.market_cap)}
                 </p>
             </a>
             

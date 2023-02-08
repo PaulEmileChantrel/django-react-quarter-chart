@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
-from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer
+from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer
 from .get_data.get_yahoo_info import get_mkt_cap
 # Create your views here.
 class CompanieView(generics.ListAPIView):
@@ -37,6 +37,8 @@ class GetCompanieInfo(APIView):
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 class CreateCompanieView(APIView):
     serializer_class = CreateCompanieSerializer
+
+    
     
     def post(self, request,format = None):
         #does the user has a session?
@@ -61,6 +63,26 @@ class CreateCompanieView(APIView):
                 return Response(CompanieSerializer(company).data,status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class CompanyChartData(APIView):
+    serializer_class = CompanieIncomeSerializer
+    lookup_url_kwarg = 'ticker'
+
+    def get(self, request, format = None):
+    
+        ticker = request.GET.get(self.lookup_url_kwarg)
+        if ticker != None:
+            companie = Companie.objects.filter(ticker=ticker)
+
+            if len(companie) > 0:
+                companie_income = CompanieIncomeStatment.objects.filter(name=companie[0])
+                data = CompanieIncomeSerializer(companie[0]).data
+                
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
+        return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 def update_light_balance_sheet():

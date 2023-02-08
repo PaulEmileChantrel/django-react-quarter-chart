@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Companie,CompanieInfo
+from .models import Companie,CompanieInfo,CompanieIncomeStatement
 
 class CompanieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +25,9 @@ class CompanieFullInfoSerializer(serializers.ModelSerializer):
     
     companie_info = CompanieInfoSerializer(read_only=True)
     
+
+class CompanieIncomeSerializer(serializers.Serializer):
+
+    class Meta:
+        model = CompanieIncomeStatement
+        fields = ['light_quarterly_income_statement']

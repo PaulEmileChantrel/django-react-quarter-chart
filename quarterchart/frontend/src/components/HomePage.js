@@ -44,8 +44,8 @@ export default function HomePage () {
           timerId = setTimeout(() => {
             // Call your onChange function here
             searchCompanie()
-            console.log(`Debounced value: ${name}`);
-          }, 200);
+            //console.log(`Debounced value: ${name}`);
+          }, 300);
         }
         return () => clearTimeout(timerId);
       }, [name]);
