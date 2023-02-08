@@ -7,10 +7,11 @@ from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_
 
 
 def shrink_income_stmt(df):
-    return df
+    return df.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
 
 def shrink_balance_sheet(df):
-    return df
+    return df.loc[['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity']]
+    
 
 def shrink_cashflow(df):
     return df
@@ -114,12 +115,7 @@ class CompanieBalanceSheet(models.Model):
     light_quarterly_balance_sheet = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
     
-    def full_annual_unpacked(self):
-        return u'{full_annual_balance_sheet}'.format(full_annual_balance_sheet=self.full_annual_balance_sheet)
-
-    def full_quarterly_unpacked(self):
-        return u'{full_quarterly_balance_sheet}'.format(full_quarterly_balance_sheet=self.full_quarterly_balance_sheet)
-
+    
     def __str__(self):
         return self.name.name +' Balance Sheet'
 
