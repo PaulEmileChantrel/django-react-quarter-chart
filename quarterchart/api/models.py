@@ -14,7 +14,9 @@ def shrink_balance_sheet(df):
     
 
 def shrink_cashflow(df):
-    return df
+    rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Operating Income','Net Income','Beginning Cash Position','End Cash Position','Free Cash Flow'])
+    rows = list(rows.intersection(set(a_cf.index)))
+    return df.loc[rows]
 
 
 
@@ -90,9 +92,10 @@ class Companie(models.Model):
 
     def save(self):
         super(Companie, self).save()
-        result = download_info(self)
-        self.data_was_downloaded = result
-        super(Companie, self).save()
+        if not data_was_downloaded:
+            result = download_info(self)
+            self.data_was_downloaded = result
+            super(Companie, self).save()
         
 
 class CompanieInfo(models.Model):
@@ -115,6 +118,12 @@ class CompanieBalanceSheet(models.Model):
     light_quarterly_balance_sheet = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
     
+    def save(self):
+        self.full_num_col = self.full_annual_balance_sheet.shape[1]
+        self.full_num_row = self.full_annual_balance_sheet.shape[0]
+        self.light_num_col = self.light_annual_balance_sheet.shape[1]
+        self.light_num_row = self.light_annual_balance_sheet.shape[0]
+        super(CompanieBalanceSheet, self).save()
     
     def __str__(self):
         return self.name.name +' Balance Sheet'
@@ -128,9 +137,19 @@ class CompanieIncomeStatement(models.Model):
     light_annual_income_statement = PickledObjectField()
     light_quarterly_income_statement = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
+    full_num_col = models.IntegerField(default=0)
+    full_num_row = models.IntegerField(default=0)
+    light_num_col = models.IntegerField(default=0)
+    light_num_row = models.IntegerField(default=0)
 
+    def save(self):
+        self.full_num_col = self.full_annual_income_statement.shape[1]
+        self.full_num_row = self.full_annual_income_statement.shape[0]
+        self.light_num_col = self.light_annual_income_statement.shape[1]
+        self.light_num_row = self.light_annual_income_statement.shape[0]
+        super(CompanieIncomeStatement, self).save()
     def __str__(self):
-        return self.name.name
+        return self.name.name+ ' Income Statement'
 class CompanieCashFlow(models.Model):
     name = models.ForeignKey(Companie, on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100)
@@ -139,5 +158,17 @@ class CompanieCashFlow(models.Model):
     light_annual_cash_flow = PickledObjectField()
     light_quarterly_cash_flow = PickledObjectField()
     last_updated_at = models.DateTimeField(auto_now=True)
+    full_num_col = models.IntegerField(default=0)
+    full_num_row = models.IntegerField(default=0)
+    light_num_col = models.IntegerField(default=0)
+    light_num_row = models.IntegerField(default=0)
+
+    def save(self):
+        self.full_num_col = self.full_annual_cash_flow.shape[1]
+        self.full_num_row = self.full_annual_cash_flow.shape[0]
+        self.light_num_col = self.light_annual_cash_flow.shape[1]
+        self.light_num_row = self.light_annual_cash_flow.shape[0]
+        super(CompanieCashFlow, self).save()
+
     def __str__(self):
-        return self.name.name
+        return self.name.name+ ' Cash Flow'

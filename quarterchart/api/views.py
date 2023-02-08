@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer
+from .get_data.get_yahoo_info import get_mkt_cap
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all().order_by('-market_cap')
@@ -73,6 +74,7 @@ def update_light_balance_sheet():
         qbl_light = qbl.loc[['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity']]
         balance_sheet.light_annual_balance_sheet = abl_light
         balance_sheet.light_quarterly_balance_sheet = qbl_light
+       
         balance_sheet.save()
 
 def update_light_income_statement():
@@ -85,6 +87,42 @@ def update_light_income_statement():
         q_inc_stmt_light = q_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
         income_stmt.light_annual_income_statement = a_inc_stmt_light
         income_stmt.light_quarterly_income_statement = q_inc_stmt_light
+        
         income_stmt.save()
 
-update_light_income_statement()
+def update_light_cash_flow():
+    companies = Companie.objects.all()
+    for cpn in companies:
+        cf = CompanieCashFlow.objects.filter(name=cpn).first()
+        a_cf = cf.full_annual_cash_flow
+        q_cf = cf.full_quarterly_cash_flow
+        print(a_cf.index)
+        print(a_cf)
+        rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Operating Income','Net Income','Beginning Cash Position','End Cash Position','Free Cash Flow'])
+        rows = list(rows.intersection(set(a_cf.index)))
+        print(rows)
+        a_cf_light = a_cf.loc[rows]
+        q_cf_light = q_cf.loc[rows]
+        cf.light_annual_cash_flow = a_cf_light
+        cf.light_quarterly_cash_flow = q_cf_light
+        
+        
+        cf.save()
+
+
+def update_all_mkt_cap():
+    companies = Companie.objects.all()
+    for cpn in companies:
+        ticker = cpn.ticker
+        mkt_cap = get_mkt_cap(ticker)
+        cpn.market_cap = mkt_cap
+        cpn.save()
+
+def update_all():
+
+    update_light_cash_flow()
+    update_light_balance_sheet()
+    update_light_income_statement()
+    update_all_mkt_cap()
+
+#update_all() 
