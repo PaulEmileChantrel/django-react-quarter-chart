@@ -11,6 +11,9 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useState,useRef,useEffect} from 'react'
 import CompaniesList from './CompaniesList';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+
 
 export default function HomePage () {
     const [name,SetName] = useState('') 
@@ -54,8 +57,7 @@ export default function HomePage () {
     
   
     return (
-        <Grid container spacing={1}>
-
+        <>
             <Grid item xs={12} align="center">
                 <Typography component="h5" variant="h5" > Companies List</Typography>
             </Grid>
@@ -72,7 +74,7 @@ export default function HomePage () {
             <Grid item xs={12} align="center">
                 {companiesList? <CompaniesList companies_list={companiesList}/>:None}
             </Grid>
-        </Grid>
+       </>
         
     )
 

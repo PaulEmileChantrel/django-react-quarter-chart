@@ -9,6 +9,7 @@ export default function ChartPage () {
     const [dataQ,setDataQ] = useState([])
     const [dataA,setDataA] = useState([])
     const [showQuarters,setShowQuarters] = useState(true)
+    const [show,setShow] = useState(false)
     const {ticker} = useParams();
     useEffect(()=>{
         getComapanieInfo()
@@ -20,7 +21,7 @@ export default function ChartPage () {
             setDataQ(data['quarter'])
             setDataA(data['annual'])
             setShowQuarters(data['time_periode']==='quarter')
-            
+            setShow(true)
         })
     
     }
@@ -43,21 +44,25 @@ export default function ChartPage () {
     return (<Grid container spacing={1}>
         <Grid item xs={12} align="center">
             <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
+            <Typography component="h7" variant="h7" > <a href = {'/info/'+ticker} >more info</a></Typography>
         </Grid>
+        {show?
+        <Grid item xs={12} align="center">
         { showQuarters ?
         <Grid item xs={12} align="center">
         
             <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
-            <Button variant="contained" color="secondary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
+            <Button variant="outlined" color="primary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
             
         </Grid>:
         <Grid item xs={12} align="center">
         
-            <Button variant="contained"  color="secondary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
+            <Button variant="outlined"  color="primary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
             <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
             
         </Grid>
         }
+        
         <Grid item xs={12} align="center">
         { showQuarters ?
         <Chart
@@ -80,6 +85,7 @@ export default function ChartPage () {
         
         }
         </Grid>
+        </Grid>:null}
 
     </Grid>)
   

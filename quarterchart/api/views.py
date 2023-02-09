@@ -6,6 +6,7 @@ from .models import *
 from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer
 from .get_data.get_yahoo_info import get_mkt_cap
+from datetime import datetime
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all().order_by('-market_cap')
@@ -65,9 +66,16 @@ class CreateCompanieView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
-def df_to_array(df,rows):
+def df_to_array(df,rows,timeframe):
     df = df[df.columns[::-1]]
-    row_list = [list(df.columns)]
+    if timeframe == 'a':
+        dates = list(df.columns)
+        print(dates[0])
+        dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) for date in dates]
+    else:
+        dates = list(df.columns)
+        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates]
+    row_list = [dates]
     head = ['Dates']+rows
 
     for row in rows:
@@ -95,7 +103,7 @@ class CompanyChartData(APIView):
         else:
             time_periode = self.request.session['time_periode']
 
-        print(time_periode)
+        
         if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
             
@@ -105,8 +113,8 @@ class CompanyChartData(APIView):
                 data_q = companie[0].light_quarterly_income_statement
                 data_a = companie[0].light_annual_income_statement
                 
-                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Net Income'])
-                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Net Income'])
+                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Net Income'],'q')
+                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Net Income'],'a')
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
