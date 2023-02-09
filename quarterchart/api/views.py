@@ -25,7 +25,7 @@ class GetCompanieInfo(APIView):
         ticker = request.GET.get(self.lookup_url_kwarg)
         if ticker != None:
             companie = Companie.objects.filter(ticker=ticker)
-
+            
             if len(companie) > 0:
                 companie_info = CompanieInfo.objects.filter(name=companie[0])
                 data = CompanieFullInfoSerializer(companie[0]).data
@@ -64,6 +64,22 @@ class CreateCompanieView(APIView):
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+
+def df_to_array(df,rows):
+    df = df[df.columns[::-1]]
+    row_list = [list(df.columns)]
+    head = ['Dates']+rows
+
+    
+    for row in rows:
+        row_list.append(list(df.loc[row]))
+    print(row_list)
+    serialize_data = [head]+list(zip(*row_list))
+    print(serialize_data)
+    return serialize_data
+    
+               
+
 class CompanyChartData(APIView):
     serializer_class = CompanieIncomeSerializer
     lookup_url_kwarg_ticker = 'ticker'
@@ -72,28 +88,19 @@ class CompanyChartData(APIView):
     def get(self, request, format = None):
     
         ticker = request.GET.get(self.lookup_url_kwarg_ticker)
-        time = request.GET.get(self.lookup_url_kwarg_time)
-        if ticker != None and time!= None:
+        #time = request.GET.get(self.lookup_url_kwarg_time)
+        if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
             
-            
+            #save session user timeframe
             if len(companie) > 0:
-                if time =='quarter':
-                    data = companie[0].light_quarterly_income_statement
-                else:
-                    data = companie[0].light_annual_income_statement
-                data = data[data.columns[::-1]]
-                dates = list(data.columns)
-                total_revenue = list(data.loc['Total Revenue'])
-                gross_profit = list(data.loc['Gross Profit'])
-                net_income = list(data.loc['Net Income'])
                 
-                # total_revenue = [str(x) for x in total_revenue]
-                # gross_profit = [str(x) for x in gross_profit]
-                # net_income = [str(x) for x in net_income]
-                serialize_data = [['Dates','Total Revenue','Gross Profit','Net Income']]+list(zip(dates,total_revenue,gross_profit,net_income))
+                data_q = companie[0].light_quarterly_income_statement
                 
-                return Response(serialize_data, status=status.HTTP_200_OK)
+                data_a = companie[0].light_annual_income_statement
+                
+                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Net Income'])
+                return Response(serialize_data_q, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 

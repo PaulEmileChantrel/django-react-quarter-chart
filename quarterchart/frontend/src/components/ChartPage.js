@@ -13,7 +13,7 @@ export default function ChartPage () {
         getComapanieInfo()
     },[])
     function getComapanieInfo(){
-        fetch('/api/get-company-chart?ticker='+ticker+'time=quarter').then(res=>res.json())
+        fetch('/api/get-company-chart?ticker='+ticker+'&time=quarter').then(res=>res.json())
         .then(data=>{
             console.log(data)
             setData(data)
