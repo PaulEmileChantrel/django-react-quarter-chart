@@ -31,3 +31,4 @@ class CompanieIncomeSerializer(serializers.Serializer):
     class Meta:
         model = CompanieIncomeStatement
         fields = '__all__'
+

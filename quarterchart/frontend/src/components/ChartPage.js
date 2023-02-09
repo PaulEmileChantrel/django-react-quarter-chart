@@ -25,14 +25,19 @@ export default function ChartPage () {
     
     }
     function updateTimeframe(e,timeframe){
-        if (timeframe==='quarter' && showQuarters){
+        if ((timeframe==='annual' && showQuarters)||(timeframe=== 'quarter' && !showQuarters)){
             setShowQuarters(!showQuarters)
-        }
-        else if (timeframe=== 'annual' &&!showQuarters){
-            setShowQuarters(!showQuarters)
-        }
-            
-    }
+
+            const requestOptions = {
+                method: 'PATCH',
+                headers :{'Content-Type': 'application/json'},
+                body: JSON.stringify({time_periode:timeframe}),
+            }
+            console.log(JSON.stringify({time_periode:timeframe}))
+            fetch('/api/update-session-time-periode',requestOptions)
+            .then(res=>console.log(res))
+  
+    }}
 
 
     return (<Grid container spacing={1}>
@@ -42,14 +47,14 @@ export default function ChartPage () {
         { showQuarters ?
         <Grid item xs={12} align="center">
         
-            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'annual')}>Quarter</Button>
-            <Button variant="contained" color="secondary" onClick={e =>updateTimeframe(e,'quarter')}>Annual</Button>
+            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
+            <Button variant="contained" color="secondary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
             
         </Grid>:
         <Grid item xs={12} align="center">
         
-            <Button variant="contained"  color="secondary" onClick={e => updateTimeframe(e,'annual')}>Quarter</Button>
-            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'quarter')}>Annual</Button>
+            <Button variant="contained"  color="secondary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
+            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
             
         </Grid>
         }

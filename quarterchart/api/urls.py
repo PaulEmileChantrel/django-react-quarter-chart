@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CompanieView,CreateCompanieView,FilterCompanieView,GetCompanieInfo,CompanyChartData
+from .views import CompanieView,CreateCompanieView,FilterCompanieView,GetCompanieInfo,CompanyChartData,UpdateSessionTimePeriode
 
 urlpatterns = [
     path('', CompanieView.as_view()),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('filterCompany/',FilterCompanieView.as_view()),
     path('get-company-info',GetCompanieInfo.as_view()),
     path('get-company-chart',CompanyChartData.as_view()),
+    path('update-session-time-periode',UpdateSessionTimePeriode.as_view())
 ]

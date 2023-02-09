@@ -70,12 +70,11 @@ def df_to_array(df,rows):
     row_list = [list(df.columns)]
     head = ['Dates']+rows
 
-    
     for row in rows:
         row_list.append(list(df.loc[row]))
-    print(row_list)
+    
     serialize_data = [head]+list(zip(*row_list))
-    print(serialize_data)
+    
     return serialize_data
     
                
@@ -83,20 +82,20 @@ def df_to_array(df,rows):
 class CompanyChartData(APIView):
     serializer_class = CompanieIncomeSerializer
     lookup_url_kwarg_ticker = 'ticker'
-    lookup_url_kwarg_time = 'time'
+    
 
     def get(self, request, format = None):
     
         ticker = request.GET.get(self.lookup_url_kwarg_ticker)
-        time_periode = request.GET.get(self.lookup_url_kwarg_time)
+        
         #does the user has a session?
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-
-        if time_periode == None:
             time_periode = "quarter"
+        else:
+            time_periode = self.request.session['time_periode']
 
-        self.request.session['time_periode'] = time_periode
+        print(time_periode)
         if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
             
@@ -114,7 +113,22 @@ class CompanyChartData(APIView):
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
 
-
+class UpdateSessionTimePeriode(APIView):
+    serializer_class = CompanieIncomeSerializer
+    
+    def patch(self, request, format = None):
+        
+        
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        
+        time_periode = self.request.data.get('time_periode')
+        if time_periode == 'quarter': # making sure that the parameter is either quarter or annual
+            self.request.session['time_periode'] = time_periode
+        else:
+            self.request.session['time_periode'] = 'annual'
+        return Response(status=status.HTTP_200_OK)
+        
 
 def update_light_balance_sheet():
     companies = Companie.objects.all()
