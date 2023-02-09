@@ -72,13 +72,24 @@ class CompanyChartData(APIView):
     
         ticker = request.GET.get(self.lookup_url_kwarg)
         if ticker != None:
-            companie = Companie.objects.filter(ticker=ticker)
-
+            companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
+            
+            
             if len(companie) > 0:
-                companie_income = CompanieIncomeStatment.objects.filter(name=companie[0])
-                data = CompanieIncomeSerializer(companie[0]).data
+                data = companie[0].light_quarterly_income_statement
+                print(data)
+                data = data[data.columns[::-1]]
+                dates = list(data.columns)
+                total_revenue = list(data.loc['Total Revenue'])
+                gross_profit = list(data.loc['Gross Profit'])
+                net_income = list(data.loc['Net Income'])
                 
-                return Response(data, status=status.HTTP_200_OK)
+                # total_revenue = [str(x) for x in total_revenue]
+                # gross_profit = [str(x) for x in gross_profit]
+                # net_income = [str(x) for x in net_income]
+                serialize_data = [['Dates','Total Revenue','Gross Profit','Net Income']]+list(zip(dates,total_revenue,gross_profit,net_income))
+                print(serialize_data)
+                return Response(serialize_data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
@@ -146,5 +157,5 @@ def update_all():
     update_light_balance_sheet()
     update_light_income_statement()
     update_all_mkt_cap()
-
+#update_all_mkt_cap()
 #update_all() 

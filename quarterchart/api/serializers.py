@@ -30,4 +30,4 @@ class CompanieIncomeSerializer(serializers.Serializer):
 
     class Meta:
         model = CompanieIncomeStatement
-        fields = ['light_quarterly_income_statement']
+        fields = '__all__'
