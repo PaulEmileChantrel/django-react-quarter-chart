@@ -1,25 +1,37 @@
 import React from 'react';
 import {useParams} from 'react-router-dom'
-import {Grid,Typography}  from '@material-ui/core';
+import {Grid,Typography,Button}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 
 
 export default function ChartPage () {
-    const [data,setData] = useState([])
-    
+    const [dataQ,setDataQ] = useState([])
+    const [dataA,setDataA] = useState([])
+    const [showQuarters,setShowQuarters] = useState(true)
     const {ticker} = useParams();
     useEffect(()=>{
         getComapanieInfo()
     },[])
     function getComapanieInfo(){
-        fetch('/api/get-company-chart?ticker='+ticker+'&time=quarter').then(res=>res.json())
+        fetch('/api/get-company-chart?ticker='+ticker).then(res=>res.json())
         .then(data=>{
             console.log(data)
-            setData(data)
+            setDataQ(data['quarter'])
+            setDataA(data['annual'])
+            setShowQuarters(data['time_periode']==='quarter')
             
         })
     
+    }
+    function updateTimeframe(e,timeframe){
+        if (timeframe==='quarter' && showQuarters){
+            setShowQuarters(!showQuarters)
+        }
+        else if (timeframe=== 'annual' &&!showQuarters){
+            setShowQuarters(!showQuarters)
+        }
+            
     }
 
 
@@ -27,17 +39,41 @@ export default function ChartPage () {
         <Grid item xs={12} align="center">
             <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
         </Grid>
+        { showQuarters ?
         <Grid item xs={12} align="center">
-        { data ?
+        
+            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'annual')}>Quarter</Button>
+            <Button variant="contained" color="secondary" onClick={e =>updateTimeframe(e,'quarter')}>Annual</Button>
+            
+        </Grid>:
+        <Grid item xs={12} align="center">
+        
+            <Button variant="contained"  color="secondary" onClick={e => updateTimeframe(e,'annual')}>Quarter</Button>
+            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'quarter')}>Annual</Button>
+            
+        </Grid>
+        }
+        <Grid item xs={12} align="center">
+        { showQuarters ?
         <Chart
             chartType="Bar"
-            data={data}
+            data={dataQ}
             width="100%"
             height="400px"
             legendToggle
             
         />
-        : null}
+        : 
+        <Chart
+            chartType="Bar"
+            data={dataA}
+            width="100%"
+            height="400px"
+            legendToggle
+            
+        />
+        
+        }
         </Grid>
 
     </Grid>)

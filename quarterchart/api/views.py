@@ -88,7 +88,15 @@ class CompanyChartData(APIView):
     def get(self, request, format = None):
     
         ticker = request.GET.get(self.lookup_url_kwarg_ticker)
-        #time = request.GET.get(self.lookup_url_kwarg_time)
+        time_periode = request.GET.get(self.lookup_url_kwarg_time)
+        #does the user has a session?
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+
+        if time_periode == None:
+            time_periode = "quarter"
+
+        self.request.session['time_periode'] = time_periode
         if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
             
@@ -96,11 +104,12 @@ class CompanyChartData(APIView):
             if len(companie) > 0:
                 
                 data_q = companie[0].light_quarterly_income_statement
-                
                 data_a = companie[0].light_annual_income_statement
                 
                 serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Net Income'])
-                return Response(serialize_data_q, status=status.HTTP_200_OK)
+                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Net Income'])
+                data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
+                return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
