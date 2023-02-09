@@ -66,18 +66,22 @@ class CreateCompanieView(APIView):
 
 class CompanyChartData(APIView):
     serializer_class = CompanieIncomeSerializer
-    lookup_url_kwarg = 'ticker'
+    lookup_url_kwarg_ticker = 'ticker'
+    lookup_url_kwarg_time = 'time'
 
     def get(self, request, format = None):
     
-        ticker = request.GET.get(self.lookup_url_kwarg)
-        if ticker != None:
+        ticker = request.GET.get(self.lookup_url_kwarg_ticker)
+        time = request.GET.get(self.lookup_url_kwarg_time)
+        if ticker != None and time!= None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
             
             
             if len(companie) > 0:
-                data = companie[0].light_quarterly_income_statement
-                print(data)
+                if time =='quarter':
+                    data = companie[0].light_quarterly_income_statement
+                else:
+                    data = companie[0].light_annual_income_statement
                 data = data[data.columns[::-1]]
                 dates = list(data.columns)
                 total_revenue = list(data.loc['Total Revenue'])
@@ -88,7 +92,7 @@ class CompanyChartData(APIView):
                 # gross_profit = [str(x) for x in gross_profit]
                 # net_income = [str(x) for x in net_income]
                 serialize_data = [['Dates','Total Revenue','Gross Profit','Net Income']]+list(zip(dates,total_revenue,gross_profit,net_income))
-                print(serialize_data)
+                
                 return Response(serialize_data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
