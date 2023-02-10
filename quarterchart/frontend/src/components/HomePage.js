@@ -69,7 +69,7 @@ export default function HomePage () {
                         Filter companies by name or ticker
                     </FormHelperText>
                 </FormControl>
-                <Button onClick={searchCompanie} variant="contained" color="primary">Search</Button>
+                
             </Grid>
             <Grid item xs={12} align="center">
                 {companiesList? <CompaniesList companies_list={companiesList}/>:None}

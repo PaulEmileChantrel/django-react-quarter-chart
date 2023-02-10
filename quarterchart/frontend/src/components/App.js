@@ -4,28 +4,15 @@ import ChartPage from './ChartPage';
 import CompanieInfoPage from './CompanieInfoPage';
 import {BrowserRouter as Router, Route, Routes, Link, Redirect,} from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import {Grid} from '@material-ui/core';
-
+import {Grid} from '@material-ui/core'
+import NaviBar from './Navbar';
 function App () {
     
         return (
         <Grid container spacing={1}>
-            <Navbar bg="dark" variant="dark">
-                <Container>
-                <Navbar.Brand href="/">
-                    <img
-                    alt=""
-                    src="images/logo_v1.png"
-                    width="30"
-                    height="30"
-                    className="d-inline-block align-top"
-                    />{' '}
-                    Quantum Charts
-                </Navbar.Brand>
-                </Container>
-            </Navbar>
-            
+            <Grid item xs={12} >
+                <NaviBar/>
+            </Grid>
         <Router>
             <Routes>
                 <Route exact path="/" element={<HomePage/>}/>

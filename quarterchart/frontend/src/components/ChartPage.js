@@ -15,13 +15,15 @@ export default function ChartPage () {
         getComapanieInfo()
     },[])
     function getComapanieInfo(){
-        fetch('/api/get-company-chart?ticker='+ticker).then(res=>res.json())
+        fetch('/api/get-first-company-chart?ticker='+ticker).then(res=>res.json())
         .then(data=>{
             console.log(data)
             setDataQ(data['quarter'])
             setDataA(data['annual'])
             setShowQuarters(data['time_periode']==='quarter')
             setShow(true)
+            fetch('/api/get-other-company-chart?ticker='+ticker)
+            .then(res=>res.json()).then(data=>{console.log(data)})
         })
     
     }
@@ -44,7 +46,7 @@ export default function ChartPage () {
     return (<Grid container spacing={1}>
         <Grid item xs={12} align="center">
             <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
-            <Typography component="h7" variant="h7" > <a href = {'/info/'+ticker} >more info</a></Typography>
+            <Typography component="a" variant="a" href = {'/info/'+ticker} > more info</Typography>
         </Grid>
         {show?
         <Grid item xs={12} align="center">
@@ -68,17 +70,24 @@ export default function ChartPage () {
         <Chart
             chartType="Bar"
             data={dataQ}
-            width="100%"
-            height="400px"
+            width="80%"
+            height="300px"
             legendToggle
+            options={
+                // Chart options
+                {
+                  title: "Quarterly Revenue & Operating Income",
+                  
+                }
+              }
             
         />
         : 
         <Chart
             chartType="Bar"
             data={dataA}
-            width="100%"
-            height="400px"
+            width="80%"
+            height="300px"
             legendToggle
             
         />

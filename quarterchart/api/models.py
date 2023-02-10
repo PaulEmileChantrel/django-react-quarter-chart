@@ -7,7 +7,7 @@ from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_
 
 
 def shrink_income_stmt(df):
-    return df.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
+    return df.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
 
 def shrink_balance_sheet(df):
     return df.loc[['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity']]

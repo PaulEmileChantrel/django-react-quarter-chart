@@ -87,7 +87,7 @@ def df_to_array(df,rows,timeframe):
     
                
 
-class CompanyChartData(APIView):
+class CompanyFirstChartData(APIView):
     serializer_class = CompanieIncomeSerializer
     lookup_url_kwarg_ticker = 'ticker'
     
@@ -106,21 +106,26 @@ class CompanyChartData(APIView):
         
         if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
-            
+            companie_balance = CompanieCashFlow.objects.filter(ticker=ticker)
             #save session user timeframe
             if len(companie) > 0:
                 
                 data_q = companie[0].light_quarterly_income_statement
                 data_a = companie[0].light_annual_income_statement
-                
-                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Net Income'],'q')
-                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Net Income'],'a')
+                print(data_q.index)
+                print(companie_balance[0].light_quarterly_cash_flow.index)
+
+                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
+                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
-
+class CompanyOtherChartData(APIView):
+    
+    def get(self, request, format = None):
+        pass
 class UpdateSessionTimePeriode(APIView):
     serializer_class = CompanieIncomeSerializer
     
@@ -155,11 +160,13 @@ def update_light_balance_sheet():
 def update_light_income_statement():
     companies = Companie.objects.all()
     for cpn in companies:
+        print(cpn.name)
         income_stmt = CompanieIncomeStatement.objects.filter(name=cpn).first()
         a_inc_stmt = income_stmt.full_annual_income_statement
         q_inc_stmt = income_stmt.full_quarterly_income_statement
-        a_inc_stmt_light = a_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
-        q_inc_stmt_light = q_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
+        print(q_inc_stmt.index)
+        a_inc_stmt_light = a_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
+        q_inc_stmt_light = q_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
         income_stmt.light_annual_income_statement = a_inc_stmt_light
         income_stmt.light_quarterly_income_statement = q_inc_stmt_light
         
@@ -195,8 +202,8 @@ def update_all_mkt_cap():
 
 def update_all():
 
-    update_light_cash_flow()
-    update_light_balance_sheet()
+    #update_light_cash_flow()
+    #update_light_balance_sheet()
     update_light_income_statement()
     update_all_mkt_cap()
 #update_all_mkt_cap()
