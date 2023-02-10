@@ -1,6 +1,6 @@
 import React from 'react';
 import {useParams} from 'react-router-dom'
-import {Grid,Typography,Button}  from '@material-ui/core';
+import {Grid,Typography,Button,Link}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 
@@ -46,7 +46,7 @@ export default function ChartPage () {
     return (<Grid container spacing={1}>
         <Grid item xs={12} align="center">
             <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
-            <Typography component="a" variant="a" href = {'/info/'+ticker} > more info</Typography>
+            <Link  href = {'/info/'+ticker} > more info</Link>
         </Grid>
         {show?
         <Grid item xs={12} align="center">

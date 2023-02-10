@@ -68,9 +68,10 @@ class CreateCompanieView(APIView):
 
 def df_to_array(df,rows,timeframe):
     df = df[df.columns[::-1]]
+    df.fillna(0,inplace=True)
     if timeframe == 'a':
         dates = list(df.columns)
-        print(dates[0])
+        
         dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) for date in dates]
     else:
         dates = list(df.columns)
@@ -123,9 +124,69 @@ class CompanyFirstChartData(APIView):
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 
 class CompanyOtherChartData(APIView):
-    
+    lookup_url_kwarg_ticker = 'ticker'
+
     def get(self, request, format = None):
-        pass
+        ticker = request.GET.get(self.lookup_url_kwarg_ticker)
+        if ticker != None:
+            companie_inc_stmt = CompanieIncomeStatement.objects.filter(ticker=ticker)
+            companie_balance = CompanieBalanceSheet.objects.filter(ticker=ticker)
+            companie_cash_flow = CompanieCashFlow.objects.filter(ticker=ticker)
+            #save session user timeframe
+            if companie_inc_stmt.exists() and companie_balance.exists() and companie_cash_flow.exists():
+                
+                inc_stmt_q = companie_inc_stmt[0].light_quarterly_income_statement
+                inc_stmt_a = companie_inc_stmt[0].light_annual_income_statement
+
+                bal_sht_q = companie_balance[0].light_quarterly_balance_sheet
+                bal_sht_a = companie_balance[0].light_annual_balance_sheet
+
+                cf_q = companie_cash_flow[0].light_quarterly_cash_flow
+                cf_a = companie_cash_flow[0].light_annual_cash_flow
+                
+                print(bal_sht_q.index)
+                #income statement
+                chart1_q = df_to_array(inc_stmt_q,['Net Income'],'q')
+                chart1_a = df_to_array(inc_stmt_a,['Net Income'],'a')
+
+                chart2_q = df_to_array(inc_stmt_q,['Operating Expense'],'q')
+                chart2_a = df_to_array(inc_stmt_a,['Operating Expense'],'a')
+
+                #balance sheet
+                chart3_q = df_to_array(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
+                chart3_a = df_to_array(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
+
+                chart4_q = df_to_array(bal_sht_q,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'q')
+                chart4_a = df_to_array(bal_sht_a,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'a')
+
+                chart5_q = df_to_array(bal_sht_q,['Total Debt'],'q')
+                chart5_a = df_to_array(bal_sht_a,['Total Debt'],'a')
+
+                #cash flow
+                chart6_q = df_to_array(cf_q,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'q')
+                chart6_a = df_to_array(cf_a,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'a')
+                
+
+                chart7_q = df_to_array(cf_q,['End Cash Position'],'q')
+                chart7_a = df_to_array(cf_a,['End Cash Position'],'a')
+                
+                #others (ebita and eps)
+                chart8_q = df_to_array(inc_stmt_q,['Normalized EBITDA'],'q')
+                chart8_a = df_to_array(inc_stmt_a,['Normalized EBITDA'],'a')
+
+                chart9_q = df_to_array(inc_stmt_q,['Basic EPS'],'q')
+                chart9_a = df_to_array(inc_stmt_a,['Basic EPS'],'a')
+
+
+                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
+                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
+
+
+                data = {'quarter': serialize_data_q,'annual': serialize_data_a}
+                print(data)
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
+        return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
 class UpdateSessionTimePeriode(APIView):
     serializer_class = CompanieIncomeSerializer
     
