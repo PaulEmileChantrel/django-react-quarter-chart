@@ -3,7 +3,7 @@ from picklefield.fields import PickledObjectField
 import pandas as pd
 import time,json
 from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_info
-
+import datetime
 
 
 def shrink_income_stmt(df):
@@ -98,7 +98,8 @@ class Companie(models.Model):
             self.data_was_downloaded = result
             super(Companie, self).save()
         
-
+def yesterday():
+    return datetime.date.today() - datetime.timedelta(days=1)
 class CompanieInfo(models.Model):
     name = models.ForeignKey(Companie,related_name='compagnie_info', on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100)
@@ -107,6 +108,7 @@ class CompanieInfo(models.Model):
     industry = models.CharField(max_length=100)
     website = models.CharField(max_length=250)
     last_updated_at = models.DateTimeField(auto_now_add=True)
+    next_earnings_date = models.DateTimeField(null=True,blank=True,default=yesterday)
 
     def __str__(self):
         return self.name.name +' Infos'

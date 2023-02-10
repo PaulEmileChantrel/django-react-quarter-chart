@@ -10,9 +10,9 @@ function NaviBar (){
                 <img
                 alt=""
                 src="/static/images/logo_v1.png"
-                width="30"
-                height="30"
-                className="d-inline-block align-top"
+                width="50"
+                height="50"
+                className="d-inline-block align-center"
                 />{' '}
                 Quantum Charts
             </Navbar.Brand>

@@ -34,6 +34,7 @@ def get_general_yahoo_info(ticker:str)-> dict:
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
     infos = stock.fast_info
+    print(infos)
     marketCap = infos['market_cap']
     
     return marketCap

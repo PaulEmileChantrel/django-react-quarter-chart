@@ -32,3 +32,8 @@ class CompanieIncomeSerializer(serializers.Serializer):
         model = CompanieIncomeStatement
         fields = '__all__'
 
+class NextEarningsSerializer(serializers.Serializer):
+
+    class Meta:
+        model = CompanieInfo
+        fields = ['next_earnings_date']

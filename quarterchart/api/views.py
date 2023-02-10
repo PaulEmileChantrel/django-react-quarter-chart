@@ -4,9 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
-from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer
+from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer,NextEarningsSerializer
 from .get_data.get_yahoo_info import get_mkt_cap
-from datetime import datetime
+from datetime import datetime,date,timedelta
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all().order_by('-market_cap')
@@ -205,6 +205,12 @@ class UpdateSessionTimePeriode(APIView):
             self.request.session['time_periode'] = 'annual'
         return Response(status=status.HTTP_200_OK)
         
+
+class NextEarningsView(APIView):
+    yesterday = date.today() - timedelta(days=1)
+    serializer_class = NextEarningsSerializer
+    queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('-next_earnings_date')
+
 
 def update_light_balance_sheet():
     companies = Companie.objects.all()
