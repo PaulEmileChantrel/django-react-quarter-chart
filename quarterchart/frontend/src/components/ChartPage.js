@@ -3,11 +3,13 @@ import {useParams} from 'react-router-dom'
 import {Grid,Typography,Button,Link}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
-
+import OtherChart from './OtherChart';
 
 export default function ChartPage () {
     const [dataQ,setDataQ] = useState([])
     const [dataA,setDataA] = useState([])
+    const [otherChartDataQ,setOtherChartDataQ] = useState([])
+    const [otherChartDataA,setOtherChartDataA] = useState([])
     const [showQuarters,setShowQuarters] = useState(true)
     const [show,setShow] = useState(false)
     const {ticker} = useParams();
@@ -23,7 +25,11 @@ export default function ChartPage () {
             setShowQuarters(data['time_periode']==='quarter')
             setShow(true)
             fetch('/api/get-other-company-chart?ticker='+ticker)
-            .then(res=>res.json()).then(data=>{console.log(data)})
+            .then(res=>res.json()).then(data=>{
+                setOtherChartDataQ(data['quarter'])
+                setOtherChartDataA(data['annual'])
+
+            })
         })
     
     }
@@ -95,6 +101,7 @@ export default function ChartPage () {
         }
         </Grid>
         </Grid>:null}
+        <OtherChart otherChartDataQ = {otherChartDataQ} otherChartDataA={otherChartDataA} showQuarters={showQuarters}/>
 
     </Grid>)
   

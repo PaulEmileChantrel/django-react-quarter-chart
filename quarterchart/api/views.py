@@ -69,6 +69,7 @@ class CreateCompanieView(APIView):
 def df_to_array(df,rows,timeframe):
     df = df[df.columns[::-1]]
     df.fillna(0,inplace=True)
+    head = ['Dates']+rows
     if timeframe == 'a':
         dates = list(df.columns)
         
@@ -77,11 +78,13 @@ def df_to_array(df,rows,timeframe):
         dates = list(df.columns)
         dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates]
     row_list = [dates]
-    head = ['Dates']+rows
+    
 
     for row in rows:
+        print(row)
+        print(df.loc[row])
         row_list.append(list(df.loc[row]))
-    
+    print(row_list)
     serialize_data = [head]+list(zip(*row_list))
     
     return serialize_data
@@ -113,9 +116,7 @@ class CompanyFirstChartData(APIView):
                 
                 data_q = companie[0].light_quarterly_income_statement
                 data_a = companie[0].light_annual_income_statement
-                print(data_q.index)
-                print(companie_balance[0].light_quarterly_cash_flow.index)
-
+               
                 serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
                 serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
@@ -144,14 +145,15 @@ class CompanyOtherChartData(APIView):
                 cf_q = companie_cash_flow[0].light_quarterly_cash_flow
                 cf_a = companie_cash_flow[0].light_annual_cash_flow
                 
-                print(bal_sht_q.index)
+                print(inc_stmt_q.index)
+                print(inc_stmt_q)
                 #income statement
                 chart1_q = df_to_array(inc_stmt_q,['Net Income'],'q')
                 chart1_a = df_to_array(inc_stmt_a,['Net Income'],'a')
 
                 chart2_q = df_to_array(inc_stmt_q,['Operating Expense'],'q')
                 chart2_a = df_to_array(inc_stmt_a,['Operating Expense'],'a')
-
+                print(chart2_a)
                 #balance sheet
                 chart3_q = df_to_array(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
                 chart3_a = df_to_array(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
@@ -183,7 +185,7 @@ class CompanyOtherChartData(APIView):
 
 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a}
-                print(data)
+                
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request' : 'ticker parameter not found in request'},status=status.HTTP_400_BAD_REQUEST)
@@ -226,8 +228,8 @@ def update_light_income_statement():
         a_inc_stmt = income_stmt.full_annual_income_statement
         q_inc_stmt = income_stmt.full_quarterly_income_statement
         print(q_inc_stmt.index)
-        a_inc_stmt_light = a_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
-        q_inc_stmt_light = q_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
+        a_inc_stmt_light = a_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
+        q_inc_stmt_light = q_inc_stmt.loc[['Total Revenue','Gross Profit','Operating Expense','Operating Income','Net Income','Basic EPS','Normalized EBITDA']]
         income_stmt.light_annual_income_statement = a_inc_stmt_light
         income_stmt.light_quarterly_income_statement = q_inc_stmt_light
         
