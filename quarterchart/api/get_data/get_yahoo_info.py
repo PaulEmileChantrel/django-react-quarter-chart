@@ -2,7 +2,7 @@ import requests
 import yfinance as yf
 import pprint
 from yahooquery import Ticker
-
+import datetime
 def main(ticker):
     stock = yf.Ticker(ticker)
     print(stock.basic_info)
@@ -32,7 +32,23 @@ def get_general_yahoo_info(ticker:str)-> dict:
     infos = stock.info
     print(infos)
     return infos,marketCap
-def get_general_yahoo_info1(ticker:str)-> dict:
+
+def get_next_earnings_date(ticker:str):
+    stock = Ticker(ticker)
+    earnings = stock.calendar_events
+    
+    earnings = earnings[ticker]['earnings']['earningsDate'][0]
+    index = earnings.find('S')
+    if index >0:
+        earnings = earnings[:index-1]
+
+    date_format = "%Y-%m-%d %H:%M"
+
+    date_object = datetime.datetime.strptime(earnings, date_format)
+    
+    return earnings
+
+def get_general_yahoo_info2(ticker:str)-> dict:
     #same function as above but using yahooquery
     stock = Ticker(ticker)
     asset_profile = stock.asset_profile

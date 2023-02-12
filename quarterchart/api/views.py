@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer,NextEarningsSerializer
-from .get_data.get_yahoo_info import get_mkt_cap
+from .get_data.get_yahoo_info import get_mkt_cap,get_next_earnings_date
 from datetime import datetime,date,timedelta
 # Create your views here.
 class CompanieView(generics.ListAPIView):
@@ -280,8 +280,8 @@ def update_earnings_date():
     companies = CompanieInfo.objects.all()
     for cpn in companies:
         ticker = cpn.ticker
-        mkt_cap = get_mkt_cap(ticker)
-        cpn.market_cap = mkt_cap
+        next_earnings_date = get_next_earnings_date(ticker)
+        cpn.next_earnings_date = next_earnings_date
         cpn.save()
 def update_all():
 
@@ -289,7 +289,8 @@ def update_all():
     #update_light_balance_sheet()
     update_light_income_statement()
     update_all_mkt_cap()
+    update_earnings_date()
 #update_all_mkt_cap()
-
+#update_earnings_date()
 
 #update_all() 
