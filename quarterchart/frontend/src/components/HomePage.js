@@ -13,18 +13,25 @@ import {useState,useRef,useEffect} from 'react'
 import CompaniesList from './CompaniesList';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-
+import EarningsList from './EarningsList';
 
 export default function HomePage () {
     const [name,SetName] = useState('') 
     const [companiesList,SetCompaniesList] = useState([])
+    const [earningsList,setEarningsList] = useState([])
     const nameRef = useRef() 
     
     
 
-    async function loadCompanyList() {
-        await fetch('/api').then(response => response.json())
+    function loadCompanyList() {
+        fetch('/api').then(response => response.json())
         .then(data => SetCompaniesList(data))
+        .catch(error => console.log(error))
+    }
+    function loadCompanyEarningsList() {
+        fetch('/api/next-earnings').then(response => response.json())
+        .then(data => {console.log(data),
+                setEarningsList(data)})
         .catch(error => console.log(error))
     }
     function searchCompanie(){
@@ -40,8 +47,13 @@ export default function HomePage () {
 
     }
     useEffect(() => {
-        let timerId;
         loadCompanyList()
+        loadCompanyEarningsList()
+    },[]);
+    useEffect(() => {
+        let timerId;
+        
+        
         if (name) {
           clearTimeout(timerId);
           timerId = setTimeout(() => {
@@ -58,6 +70,7 @@ export default function HomePage () {
   
     return (
         <>
+        <Grid item xs={10} align="center">
             <Grid item xs={12} align="center">
                 <Typography component="h5" variant="h5" > Companies List</Typography>
             </Grid>
@@ -71,8 +84,15 @@ export default function HomePage () {
                 </FormControl>
                 
             </Grid>
-            <Grid item xs={12} align="center">
-                {companiesList? <CompaniesList companies_list={companiesList}/>:None}
+                <Grid item xs={12} align="center">
+                    {companiesList? <CompaniesList companies_list={companiesList}/>:null}
+                </Grid>
+            </Grid>
+            <Grid item xs={2} align="center">
+                <Grid item xs={12} align="center">
+                    <Typography component="h6" variant="h6" > Next Earnings </Typography>
+                    {earningsList? <EarningsList earningsList={earningsList}/>:null}
+                </Grid>
             </Grid>
        </>
         

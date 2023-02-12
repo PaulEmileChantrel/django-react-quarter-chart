@@ -11,6 +11,7 @@ class CreateCompanieSerializer(serializers.ModelSerializer):
         model = Companie
         fields = ['name','ticker']
 
+
 class CompanieInfoSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -32,8 +33,12 @@ class CompanieIncomeSerializer(serializers.Serializer):
         model = CompanieIncomeStatement
         fields = '__all__'
 
-class NextEarningsSerializer(serializers.Serializer):
 
+
+
+class NextEarningsSerializer(serializers.ModelSerializer):
+    next_earnings_date = serializers.DateTimeField(format="%m-%d")
     class Meta:
-        model = CompanieInfo
-        fields = ['next_earnings_date']
+        model =  CompanieInfo
+        fields = ['ticker','id','next_earnings_date']
+ 

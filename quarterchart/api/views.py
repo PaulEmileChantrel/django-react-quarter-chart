@@ -10,7 +10,6 @@ from datetime import datetime,date,timedelta
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.all().order_by('-market_cap')
-
     serializer_class = CompanieSerializer
 
 class FilterCompanieView(generics.ListAPIView):
@@ -206,11 +205,20 @@ class UpdateSessionTimePeriode(APIView):
         return Response(status=status.HTTP_200_OK)
         
 
-class NextEarningsView(APIView):
-    yesterday = date.today() - timedelta(days=1)
+class NextEarningsView(generics.ListAPIView):
     serializer_class = NextEarningsSerializer
-    queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('-next_earnings_date')
+    yesterday = date.today() - timedelta(days=1)
+    queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
+    
 
+    # def get_queryset(self):
+    #     yesterday = date.today() - timedelta(days=1)
+        
+    #     queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
+    #     print(queryset)
+    #     return queryset
+    
+    
 
 def update_light_balance_sheet():
     companies = Companie.objects.all()
@@ -275,5 +283,5 @@ def update_all():
     #update_light_balance_sheet()
     update_light_income_statement()
     update_all_mkt_cap()
-#update_all_mkt_cap()
+update_all_mkt_cap()
 #update_all() 

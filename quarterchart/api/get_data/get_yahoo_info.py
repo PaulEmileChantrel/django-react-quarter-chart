@@ -1,6 +1,8 @@
 import requests
 import yfinance as yf
 import pprint
+from yahooquery import Ticker
+
 def main(ticker):
     stock = yf.Ticker(ticker)
     print(stock.basic_info)
@@ -34,9 +36,10 @@ def get_general_yahoo_info(ticker:str)-> dict:
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
     infos = stock.fast_info
-    print(infos)
-    marketCap = infos['market_cap']
     
+    marketCap = infos['market_cap']
+    stock = Ticker(ticker)
+    print(stock.calendar_events)
     return marketCap
 
 def get_financial_yahoo_info(ticker:str)-> dict:

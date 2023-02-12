@@ -9,7 +9,7 @@ class CompanieAdmin(admin.ModelAdmin):
 
 class CompanieInfoAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {"fields": (['name','ticker','summary','sector','website','industry'])}),
+        (None, {"fields": (['name','ticker','summary','sector','website','industry','next_earnings_date'])}),
     )
 
 class CompanieBalanceSheetAdmin(admin.ModelAdmin):
