@@ -26,7 +26,7 @@ def download_info(companieModel):
     info_downloaded,finance_downloaded = False,False
     #general infos
     try:
-        infos,market_cap = get_general_yahoo_info(companieModel.ticker)
+        infos,market_cap = get_general_yahoo_info2(companieModel.ticker)
         
     except Exception as e:
         print(e)
@@ -39,8 +39,12 @@ def download_info(companieModel):
         summary = infos['longBusinessSummary']
         industry = infos['industry']
         website = infos['website']
+        if 'next_earnings_date' in infos:
+            next_earnings_date = infos['next_earnings_date']
+        else:
+            next_earnings_date = yesterday()
 
-        c_info = CompanieInfo(ticker=companieModel.ticker,name=companieModel,sector=sector,summary=summary,industry=industry,website=website)
+        c_info = CompanieInfo(ticker=companieModel.ticker,name=companieModel,sector=sector,summary=summary,industry=industry,website=website,next_earnings_date=next_earnings_date)
         c_info.save()
         info_downloaded = True
 

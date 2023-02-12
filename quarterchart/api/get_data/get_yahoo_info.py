@@ -32,14 +32,38 @@ def get_general_yahoo_info(ticker:str)-> dict:
     infos = stock.info
     print(infos)
     return infos,marketCap
+def get_general_yahoo_info1(ticker:str)-> dict:
+    #same function as above but using yahooquery
+    stock = Ticker(ticker)
+    asset_profile = stock.asset_profile
+    asset_profile = asset_profile[ticker]
+
+    earnings = stock.calendar_events
+    earnings = earnings[ticker]['earnings']['earningsDate'][0]
+    #for compatibility with yfinance results
+    infos = {}
+    infos['logo_link'] = ""
+    infos['sector'] = asset_profile['sector']
+    infos['longBusinessSummary'] = asset_profile['longBusinessSummary']
+    infos['industry'] = asset_profile['industry']
+    infos['website'] = asset_profile['website']
+    infos['next_earnings_date'] = earnings
+    marketCap = stock.summary_detail
+    marketCap = marketCap[ticker]['marketCap']
+    
+    return infos,marketCap
 
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
     infos = stock.fast_info
     
     marketCap = infos['market_cap']
-    stock = Ticker(ticker)
-    print(stock.calendar_events)
+    if ticker == 'AAPL':
+        stock = Ticker(ticker)
+
+        print(stock.summary_detail)
+        # df = stock.income_statement('q')
+        # df.to_csv('AAPL.csv')
     return marketCap
 
 def get_financial_yahoo_info(ticker:str)-> dict:

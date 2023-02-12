@@ -276,12 +276,20 @@ def update_all_mkt_cap():
         mkt_cap = get_mkt_cap(ticker)
         cpn.market_cap = mkt_cap
         cpn.save()
-
+def update_earnings_date():
+    companies = CompanieInfo.objects.all()
+    for cpn in companies:
+        ticker = cpn.ticker
+        mkt_cap = get_mkt_cap(ticker)
+        cpn.market_cap = mkt_cap
+        cpn.save()
 def update_all():
 
     #update_light_cash_flow()
     #update_light_balance_sheet()
     update_light_income_statement()
     update_all_mkt_cap()
-update_all_mkt_cap()
+#update_all_mkt_cap()
+
+
 #update_all() 
