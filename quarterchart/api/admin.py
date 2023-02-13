@@ -4,7 +4,7 @@ from .models import Companie, CompanieInfo,CompanieBalanceSheet,CompanieCashFlow
 
 class CompanieAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {"fields": (['name','ticker','market_cap','image_link'])}),
+        (None, {"fields": (['name','ticker','market_cap','image_link','data_was_downloaded'])}),
     )
 
 class CompanieInfoAdmin(admin.ModelAdmin):

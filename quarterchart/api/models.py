@@ -2,7 +2,7 @@ from django.db import models
 from picklefield.fields import PickledObjectField
 import pandas as pd
 import time,json
-from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_info
+from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_info,get_general_yahoo_info2,get_financial_yahoo_info2
 import datetime
 
 
@@ -14,8 +14,8 @@ def shrink_balance_sheet(df):
     
 
 def shrink_cashflow(df):
-    rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Operating Income','Net Income','Beginning Cash Position','End Cash Position','Free Cash Flow'])
-    rows = list(rows.intersection(set(a_cf.index)))
+    rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Beginning Cash Position','End Cash Position','Free Cash Flow'])
+    rows = list(rows.intersection(set(df.index)))
     return df.loc[rows]
 
 
@@ -33,8 +33,8 @@ def download_info(companieModel):
     else:
         
         companieModel.market_cap = market_cap
-        print(infos)
-        companieModel.image_link = infos['logo_link']
+        #print(infos)
+        #companieModel.image_link = infos['logo_link']
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']
@@ -49,7 +49,7 @@ def download_info(companieModel):
         info_downloaded = True
 
     try:
-        income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financial_yahoo_info(companieModel.ticker)
+        income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financial_yahoo_info2(companieModel.ticker)
         
     except Exception as e:
         
@@ -105,8 +105,8 @@ class Companie(models.Model):
 def yesterday():
     return datetime.date.today() - datetime.timedelta(days=1)
 class CompanieInfo(models.Model):
-    name = models.ForeignKey(Companie,related_name='compagnie_info', on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=100)
+    name = models.OneToOneField(Companie,related_name='compagnie_info', on_delete=models.CASCADE)
+    ticker = models.CharField(max_length=100,unique=True)
     sector = models.CharField(max_length=100)
     summary = models.TextField()
     industry = models.CharField(max_length=100)
@@ -117,8 +117,8 @@ class CompanieInfo(models.Model):
     def __str__(self):
         return self.name.name +' Infos'
 class CompanieBalanceSheet(models.Model):
-    name = models.ForeignKey(Companie, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=100)
+    name = models.OneToOneField(Companie, on_delete=models.CASCADE)
+    ticker = models.CharField(max_length=100,unique=True)
     full_annual_balance_sheet = PickledObjectField()
     full_quarterly_balance_sheet = PickledObjectField()
     light_annual_balance_sheet = PickledObjectField()
@@ -140,8 +140,8 @@ class CompanieBalanceSheet(models.Model):
 
 
 class CompanieIncomeStatement(models.Model):
-    name = models.ForeignKey(Companie, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=100)
+    name = models.OneToOneField(Companie, on_delete=models.CASCADE)
+    ticker = models.CharField(max_length=100,unique=True)
     full_annual_income_statement = PickledObjectField()
     full_quarterly_income_statement = PickledObjectField()
     light_annual_income_statement = PickledObjectField()
@@ -161,8 +161,8 @@ class CompanieIncomeStatement(models.Model):
     def __str__(self):
         return self.name.name+ ' Income Statement'
 class CompanieCashFlow(models.Model):
-    name = models.ForeignKey(Companie, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=100)
+    name = models.OneToOneField(Companie, on_delete=models.CASCADE)
+    ticker = models.CharField(max_length=100,unique=True)
     full_annual_cash_flow = PickledObjectField()
     full_quarterly_cash_flow = PickledObjectField()
     light_annual_cash_flow = PickledObjectField()

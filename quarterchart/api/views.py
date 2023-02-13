@@ -66,16 +66,16 @@ class CreateCompanieView(APIView):
 
 
 def df_to_array(df,rows,timeframe):
-    df = df[df.columns[::-1]]
+    #df = df[df.columns[::-1]]
     df.fillna(0,inplace=True)
     head = ['Dates']+rows
     if timeframe == 'a':
         dates = list(df.columns)
         
-        dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) for date in dates]
+        dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) if date!='TTM' else 'TTM' for date in dates ]
     else:
         dates = list(df.columns)
-        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates]
+        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" if date!='TTM' else 'TTM' for date in dates]
     row_list = [dates]
     
 
@@ -211,12 +211,7 @@ class NextEarningsView(generics.ListAPIView):
     queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
     
 
-    # def get_queryset(self):
-    #     yesterday = date.today() - timedelta(days=1)
-        
-    #     queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
-    #     print(queryset)
-    #     return queryset
+
     
     
 
@@ -290,7 +285,7 @@ def update_all():
     update_light_income_statement()
     update_all_mkt_cap()
     update_earnings_date()
-#update_all_mkt_cap()
+update_all_mkt_cap()
 #update_earnings_date()
 
 #update_all() 

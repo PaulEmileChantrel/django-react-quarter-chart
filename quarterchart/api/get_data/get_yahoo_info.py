@@ -3,6 +3,8 @@ import yfinance as yf
 import pprint
 from yahooquery import Ticker
 import datetime
+import re
+import pandas as pd
 def main(ticker):
     stock = yf.Ticker(ticker)
     print(stock.basic_info)
@@ -56,6 +58,9 @@ def get_general_yahoo_info2(ticker:str)-> dict:
 
     earnings = stock.calendar_events
     earnings = earnings[ticker]['earnings']['earningsDate'][0]
+    index = earnings.find('S')
+    if index >0:
+        earnings = earnings[:index-1]
     #for compatibility with yfinance results
     infos = {}
     infos['logo_link'] = ""
@@ -74,12 +79,7 @@ def get_mkt_cap(ticker:str)-> dict:
     infos = stock.fast_info
     
     marketCap = infos['market_cap']
-    if ticker == 'AAPL':
-        stock = Ticker(ticker)
-
-        print(stock.summary_detail)
-        # df = stock.income_statement('q')
-        # df.to_csv('AAPL.csv')
+    
     return marketCap
 
 def get_financial_yahoo_info(ticker:str)-> dict:
@@ -102,6 +102,36 @@ def get_financial_yahoo_info(ticker:str)-> dict:
     #print(stock.get_income_stmt())
     return income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow
 
+def transform_df(df:pd.DataFrame)-> pd.DataFrame:
+    df = df.T
+    df.columns = list(df.loc['asOfDate'])
+    ttm = df.loc['periodType']=='TTM'
+    if df.iloc[1,-1:].values[0] == 'TTM':
+        col = df.iloc[1,-1:].index
+        df.rename(columns={col[0]:'TTM'}, inplace=True)
+    #print(df.iloc[1,-1:].index)
+    df.rename(index = lambda s : re.sub("([a-z])([A-Z])","\g<1> \g<2>",s), inplace=True)
+    return df
+
+def get_financial_yahoo_info2(ticker:str)-> list:
+    stock = Ticker(ticker)
+    #finantials
+    print("## Income Statement ##")
+    income_stmt = transform_df(stock.income_statement())
+    quarterly_income_stmt = transform_df(stock.income_statement('q'))
+
+    print("## Balance Sheet ##")
+    balance_sheet = transform_df(stock.balance_sheet())
+    quarterly_balance_sheet = transform_df(stock.balance_sheet('q'))
+
+    print("## Cash Flow ##")
+    cashflow = transform_df(stock.cash_flow())
+    quarterly_cashflow = transform_df(stock.cash_flow('q'))
+    #print(cashflow)
+    return income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow
+
+    
+
 if __name__ == '__main__':
     #main('TSLA')
-    get_general_yahoo_info('TSLA')
+    get_financial_yahoo_info2('TSLA')
