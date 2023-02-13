@@ -7,10 +7,15 @@ import datetime
 
 
 def shrink_income_stmt(df):
-    return df.loc[['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA']]
+    rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA'])
+    rows = list(rows.intersection(set(df.index)))
+    return df.loc[rows]
 
 def shrink_balance_sheet(df):
-    return df.loc[['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity']]
+    rows = set(['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity'])
+    rows = list(rows.intersection(set(df.index)))
+    return df.loc[rows]
+    
     
 
 def shrink_cashflow(df):
@@ -86,7 +91,7 @@ def download_info(companieModel):
 # Create your models here.
 class Companie(models.Model):
     name = models.CharField(max_length=100,unique=True)
-    ticker = models.CharField(max_length=6,unique=True)
+    ticker = models.CharField(max_length=10,unique=True)
     data_was_downloaded = models.BooleanField(default=False)
     created_at_date = models.DateTimeField(auto_now_add=True)
     image_link = models.CharField(max_length=250,default='')

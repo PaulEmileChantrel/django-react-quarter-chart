@@ -55,22 +55,30 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     stock = Ticker(ticker)
     asset_profile = stock.asset_profile
     asset_profile = asset_profile[ticker]
-
+    
     earnings = stock.calendar_events
-    earnings = earnings[ticker]['earnings']['earningsDate'][0]
-    index = earnings.find('S')
-    if index >0:
-        earnings = earnings[:index-1]
+    earnings = earnings[ticker]['earnings']['earningsDate']
+    if earnings !=[]:
+        earnings = earnings[0]
+    
+        index = earnings.find('S')
+        if index >0:
+            earnings = earnings[:index-1]
+    else:
+        earnings = '2022-01-01 00:00:00' 
+    
     #for compatibility with yfinance results
     infos = {}
-    infos['logo_link'] = ""
+    
     infos['sector'] = asset_profile['sector']
     infos['longBusinessSummary'] = asset_profile['longBusinessSummary']
     infos['industry'] = asset_profile['industry']
     infos['website'] = asset_profile['website']
     infos['next_earnings_date'] = earnings
+    
     marketCap = stock.summary_detail
     marketCap = marketCap[ticker]['marketCap']
+    
     
     return infos,marketCap
 
