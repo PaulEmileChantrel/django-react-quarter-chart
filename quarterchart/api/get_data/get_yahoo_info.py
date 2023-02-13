@@ -105,10 +105,11 @@ def get_financial_yahoo_info(ticker:str)-> dict:
 def transform_df(df:pd.DataFrame)-> pd.DataFrame:
     df = df.T
     df.columns = list(df.loc['asOfDate'])
-    ttm = df.loc['periodType']=='TTM'
+    print(df.loc['periodType'])
     if df.iloc[1,-1:].values[0] == 'TTM':
-        col = df.iloc[1,-1:].index
-        df.rename(columns={col[0]:'TTM'}, inplace=True)
+        df.columns = [*df.columns[:-1], 'TTM']
+        #df.drop(columns = [col[0]],inplace=True)# dropping cols with TTM
+        #df.rename(columns={col[0]:'TTM'}, inplace=True)
     #print(df.iloc[1,-1:].index)
     df.rename(index = lambda s : re.sub("([a-z])([A-Z])","\g<1> \g<2>",s), inplace=True)
     return df
@@ -127,6 +128,7 @@ def get_financial_yahoo_info2(ticker:str)-> list:
     print("## Cash Flow ##")
     cashflow = transform_df(stock.cash_flow())
     quarterly_cashflow = transform_df(stock.cash_flow('q'))
+    print(quarterly_cashflow.loc['period Type'])
     #print(cashflow)
     return income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow
 

@@ -34,7 +34,7 @@ def download_info(companieModel):
         
         companieModel.market_cap = market_cap
         #print(infos)
-        #companieModel.image_link = infos['logo_link']
+        companieModel.image_link = f'/static/images/{companieModel.ticker.lower()}.png'
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']
@@ -97,7 +97,7 @@ class Companie(models.Model):
 
     def save(self):
         super(Companie, self).save()
-        if not self.data_was_downloaded:
+        if not self.data_was_downloaded and not CompanieInfo.objects.filter(ticker=self.ticker).exists():
             result = download_info(self)
             self.data_was_downloaded = result
             super(Companie, self).save()
@@ -116,6 +116,21 @@ class CompanieInfo(models.Model):
 
     def __str__(self):
         return self.name.name +' Infos'
+
+    def delete(self):
+        ticker = self.ticker
+        company = Companie.objects.get(ticker=ticker)
+        #company = company[0]
+        company.data_was_downloaded = False
+        company.save()
+        company_balance_sheet = CompanieBalanceSheet.objects.filter(ticker=ticker)
+        company_balance_sheet[0].delete()
+        company_income = CompanieIncomeStatement.objects.filter(ticker=ticker)
+        company_income[0].delete()
+        company_cash_flow = CompanieCashFlow.objects.filter(ticker=ticker)
+        company_cash_flow[0].delete()
+        super(CompanieInfo,self).delete()
+        
 class CompanieBalanceSheet(models.Model):
     name = models.OneToOneField(Companie, on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100,unique=True)

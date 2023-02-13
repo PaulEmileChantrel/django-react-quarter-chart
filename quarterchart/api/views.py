@@ -75,15 +75,14 @@ def df_to_array(df,rows,timeframe):
         dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) if date!='TTM' else 'TTM' for date in dates ]
     else:
         dates = list(df.columns)
-        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" if date!='TTM' else 'TTM' for date in dates]
+        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates if date!='TTM']
     row_list = [dates]
     
 
     for row in rows:
-        print(row)
-        print(df.loc[row])
+       
         row_list.append(list(df.loc[row]))
-    print(row_list)
+    
     serialize_data = [head]+list(zip(*row_list))
     
     return serialize_data
@@ -100,9 +99,10 @@ class CompanyFirstChartData(APIView):
         ticker = request.GET.get(self.lookup_url_kwarg_ticker)
         
         #does the user has a session?
-        if not self.request.session.exists(self.request.session.session_key):
+        if not self.request.session.exists(self.request.session.session_key) or not self.request.session.exists('time_periode'):
             self.request.session.create()
             time_periode = "quarter"
+            self.request.session['time_periode'] = 'quarter'
         else:
             time_periode = self.request.session['time_periode']
 
@@ -114,6 +114,7 @@ class CompanyFirstChartData(APIView):
             if len(companie) > 0:
                 
                 data_q = companie[0].light_quarterly_income_statement
+                
                 data_a = companie[0].light_annual_income_statement
                
                 serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
@@ -144,15 +145,13 @@ class CompanyOtherChartData(APIView):
                 cf_q = companie_cash_flow[0].light_quarterly_cash_flow
                 cf_a = companie_cash_flow[0].light_annual_cash_flow
                 
-                print(inc_stmt_q.index)
-                print(inc_stmt_q)
                 #income statement
                 chart1_q = df_to_array(inc_stmt_q,['Net Income'],'q')
                 chart1_a = df_to_array(inc_stmt_a,['Net Income'],'a')
 
                 chart2_q = df_to_array(inc_stmt_q,['Operating Expense'],'q')
                 chart2_a = df_to_array(inc_stmt_a,['Operating Expense'],'a')
-                print(chart2_a)
+                
                 #balance sheet
                 chart3_q = df_to_array(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
                 chart3_a = df_to_array(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
@@ -278,6 +277,13 @@ def update_earnings_date():
         next_earnings_date = get_next_earnings_date(ticker)
         cpn.next_earnings_date = next_earnings_date
         cpn.save()
+
+def save_all():
+    #save all companies objects to redowload the data
+    companies = Companie.objects.all()
+    for cpn in companies:
+        cpn.data_was_downloaded = False
+        cpn.save()
 def update_all():
 
     #update_light_cash_flow()
@@ -285,7 +291,8 @@ def update_all():
     update_light_income_statement()
     update_all_mkt_cap()
     update_earnings_date()
-update_all_mkt_cap()
+#update_all_mkt_cap()
 #update_earnings_date()
 
 #update_all() 
+save_all()
