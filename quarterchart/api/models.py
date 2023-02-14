@@ -39,7 +39,7 @@ def download_info(companieModel):
         
         companieModel.market_cap = market_cap
         #print(infos)
-        companieModel.image_link = f'/static/images/{companieModel.ticker.lower()}.png'
+        companieModel.image_link = f'/static/images/company_logo/{companieModel.ticker.lower()}.webp'
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']

@@ -5,6 +5,11 @@ from yahooquery import Ticker
 import datetime
 import re
 import pandas as pd
+
+def convertInUSD(currency):
+    #Convert in USD
+    mult = 1
+    return mult
 def main(ticker):
     stock = yf.Ticker(ticker)
     print(stock.basic_info)
@@ -44,9 +49,6 @@ def get_next_earnings_date(ticker:str):
     if index >0:
         earnings = earnings[:index-1]
 
-    date_format = "%Y-%m-%d %H:%M"
-
-    date_object = datetime.datetime.strptime(earnings, date_format)
     
     return earnings
 
@@ -77,7 +79,11 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     infos['next_earnings_date'] = earnings
     
     marketCap = stock.summary_detail
+    print(marketCap)
+    currency = marketCap[ticker]['currency']
     marketCap = marketCap[ticker]['marketCap']
+    if currency!='USD':
+        marketCap *= convertInUSD(currency)
     
     
     return infos,marketCap
@@ -144,4 +150,4 @@ def get_financial_yahoo_info2(ticker:str)-> list:
 
 if __name__ == '__main__':
     #main('TSLA')
-    get_financial_yahoo_info2('TSLA')
+    get_general_yahoo_info2('2222.SR')
