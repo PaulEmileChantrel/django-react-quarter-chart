@@ -1,10 +1,51 @@
 from django.db import models
 from picklefield.fields import PickledObjectField
-import pandas as pd
+import requests
 import time,json
-from .get_data.get_yahoo_info import get_financial_yahoo_info,get_general_yahoo_info,get_general_yahoo_info2,get_financial_yahoo_info2
+from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2
 import datetime
+from config import API_KEY
+import pytz
 
+
+def convertInUSD(currency):
+   #1) check db for currency value
+   #2) if currency value is not in db, get it from api
+   currency_query = Currency.objects.filter(name=currency)
+   print(currency_query)
+   if currency_query.exists():
+      currency_in_db = currency_query.first()
+      today = datetime.datetime.now()
+      yesterday = today - datetime.timedelta(days=1)
+      last_currency_update = currency_in_db.last_updated_at
+      utc=pytz.UTC
+      #print(utc.localize(yesterday), utc.localize(last_currency_update))
+      if last_currency_update > utc.localize(yesterday):
+         return currency_in_db.value
+      
+   currency_value = api_call(currency)
+   currency_in_db = Currency(name=currency,ticker=currency, value=currency_value,last_updated_at=datetime.datetime.now())
+   currency_in_db.save()
+   return currency_value
+      
+   
+   
+def api_call(currency):
+   
+   url = f"https://api.apilayer.com/exchangerates_data/convert?to=USD&from={currency}&amount=1"
+
+   payload = {}
+   headers= {
+   "apikey": API_KEY,
+   }
+
+   response = requests.request("GET", url, headers=headers, data = payload)
+
+   
+   result = response.text
+   result = json.loads(result)
+   result = result['info']['rate']
+   return result
 
 def shrink_income_stmt(df):
     rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA'])
@@ -31,15 +72,19 @@ def download_info(companieModel):
     info_downloaded,finance_downloaded = False,False
     #general infos
     try:
-        infos,market_cap = get_general_yahoo_info2(companieModel.ticker)
+        infos,market_cap,share_price,currency = get_general_yahoo_info2(companieModel.ticker)
         
     except Exception as e:
         print(e)
     else:
-        
+        if currency!='USD':
+            mult = convertInUSD(currency)
+            market_cap*=mult
+            share_price*=mult
         companieModel.market_cap = market_cap
         #print(infos)
         companieModel.image_link = f'/static/images/company_logo/{companieModel.ticker.lower()}.webp'
+        companieModel.share_price = share_price
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']
@@ -96,7 +141,8 @@ class Companie(models.Model):
     created_at_date = models.DateTimeField(auto_now_add=True)
     image_link = models.CharField(max_length=250,default='')
     market_cap = models.FloatField(default=0)
-
+    share_price = models.FloatField(default=0)
+    
     def __str__(self):
         return self.name
 
@@ -124,10 +170,7 @@ class CompanieInfo(models.Model):
 
     def delete(self):
         ticker = self.ticker
-        company = Companie.objects.get(ticker=ticker)
-        #company = company[0]
-        company.data_was_downloaded = False
-        company.save()
+        
         company_balance_sheet = CompanieBalanceSheet.objects.filter(ticker=ticker)
         company_balance_sheet[0].delete()
         company_income = CompanieIncomeStatement.objects.filter(ticker=ticker)
@@ -135,6 +178,10 @@ class CompanieInfo(models.Model):
         company_cash_flow = CompanieCashFlow.objects.filter(ticker=ticker)
         company_cash_flow[0].delete()
         super(CompanieInfo,self).delete()
+        company = Companie.objects.get(ticker=ticker)
+        #company = company[0]
+        company.data_was_downloaded = False
+        company.save()
         
 class CompanieBalanceSheet(models.Model):
     name = models.OneToOneField(Companie, on_delete=models.CASCADE)
@@ -202,3 +249,11 @@ class CompanieCashFlow(models.Model):
 
     def __str__(self):
         return self.name.name+ ' Cash Flow'
+    
+    
+    
+class Currency(models.Model):
+    name = models.CharField(max_length=100,unique=True)
+    ticker = models.CharField(max_length=10,unique=True)
+    last_updated_at = models.DateTimeField(auto_now_add=True)
+    value = models.FloatField(default=0)

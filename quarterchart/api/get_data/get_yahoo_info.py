@@ -6,10 +6,6 @@ import datetime
 import re
 import pandas as pd
 
-def convertInUSD(currency):
-    #Convert in USD
-    mult = 1
-    return mult
 def main(ticker):
     stock = yf.Ticker(ticker)
     print(stock.basic_info)
@@ -34,6 +30,7 @@ def get_general_yahoo_info(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
     infos = stock.fast_info
     marketCap = infos['market_cap']
+    
     print(marketCap)
    
     infos = stock.info
@@ -59,6 +56,7 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     asset_profile = asset_profile[ticker]
     
     earnings = stock.calendar_events
+    
     earnings = earnings[ticker]['earnings']['earningsDate']
     if earnings !=[]:
         earnings = earnings[0]
@@ -80,13 +78,13 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     
     marketCap = stock.summary_detail
     print(marketCap)
+    share_price = marketCap[ticker]['open']
     currency = marketCap[ticker]['currency']
     marketCap = marketCap[ticker]['marketCap']
-    if currency!='USD':
-        marketCap *= convertInUSD(currency)
     
     
-    return infos,marketCap
+    
+    return infos,marketCap,share_price,currency
 
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
@@ -117,6 +115,8 @@ def get_financial_yahoo_info(ticker:str)-> dict:
     return income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow
 
 def transform_df(df:pd.DataFrame)-> pd.DataFrame:
+    if isinstance(df,str):
+        return df
     df = df.T
     df.columns = list(df.loc['asOfDate'])
     print(df.loc['periodType'])

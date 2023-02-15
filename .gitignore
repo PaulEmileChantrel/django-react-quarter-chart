@@ -1,6 +1,6 @@
 venv
 config.py
-
+*.csv
 # Django #
 *.log
 *.pot

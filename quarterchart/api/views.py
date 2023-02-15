@@ -7,16 +7,17 @@ from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer,NextEarningsSerializer
 from .get_data.get_yahoo_info import get_mkt_cap,get_next_earnings_date
 from datetime import datetime,date,timedelta
+from .load_companies import load_companies
 # Create your views here.
 class CompanieView(generics.ListAPIView):
-    queryset = Companie.objects.all().order_by('-market_cap')
+    queryset = Companie.objects.filter(~Q(market_cap=0)).order_by('-market_cap')
     serializer_class = CompanieSerializer
 
 class FilterCompanieView(generics.ListAPIView):
     serializer_class = CompanieSerializer
 
     def get_queryset(self):
-        return Companie.objects.filter(Q(name__icontains=self.request.query_params['name'])|Q(ticker__icontains=self.request.query_params['name']))
+        return Companie.objects.filter((Q(name__icontains=self.request.query_params['name'])|Q(ticker__icontains=self.request.query_params['name']))&~Q(market_cap=0)).order_by('-market_cap')
 class GetCompanieInfo(APIView):
     serializer_class = CompanieFullInfoSerializer
     lookup_url_kwarg = 'ticker'
@@ -296,3 +297,5 @@ def update_all():
 
 #update_all() 
 #save_all()
+
+#load_companies()
