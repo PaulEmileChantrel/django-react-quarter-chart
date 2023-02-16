@@ -7,9 +7,10 @@ export default function Company({company}) {
     return (
         <tr>
           <td>
-            <div className='d-flex align-items-center' href={'/chart/' + company.ticker} >
+            <a href={'/chart/' + company.ticker}>
+            <div className='d-flex align-items-center'  >
               <img
-                src={'/static/images/company_logo/'+company.ticker.lower()+'.webp'}
+                src={'/static/images/company_logo/'+company.ticker.toLowerCase()+'.webp'}
                 alt=''
                 style={{ width: '45px', height: '45px' }}
                 className='rounded-circle'
@@ -19,6 +20,7 @@ export default function Company({company}) {
                 <p className='text-muted mb-0'>{company.ticker}</p>
               </div>
             </div>
+            </a>
           </td>
           <td>
             <p className='fw-normal mb-1'>{formatMktCp(company.market_cap)}</p>
