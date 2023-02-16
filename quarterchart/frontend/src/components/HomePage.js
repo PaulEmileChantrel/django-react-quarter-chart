@@ -70,7 +70,7 @@ export default function HomePage () {
   
     return (
         <>
-        <Grid item xs={10} align="center">
+        <Grid item xs={9} align="center">
             <Grid item xs={12} align="center">
                 <Typography component="h5" variant="h5" > Companies List</Typography>
             </Grid>
@@ -88,7 +88,7 @@ export default function HomePage () {
                     {companiesList? <CompaniesList companies_list={companiesList}/>:null}
                 </Grid>
             </Grid>
-            <Grid item xs={2} align="center">
+            <Grid item xs={3} align="center">
                 <Grid item xs={12} align="center">
                     <Typography component="h6" variant="h6" > Next Earnings </Typography>
                     {earningsList? <EarningsList earningsList={earningsList}/>:null}

@@ -6,11 +6,12 @@ import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-reac
 export default function CompaniesList({companies_list}){
     
     return (
-        <MDBTable align='middle'>
+        <MDBTable align='middle' hover>
         <MDBTableHead>
             <tr>
             <th scope='col'>Name</th>
             <th scope='col'>Market Cap.</th>
+            <th scope='col'>Share</th>
             
             </tr>
         </MDBTableHead>

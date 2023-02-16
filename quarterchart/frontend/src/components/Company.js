@@ -13,7 +13,7 @@ export default function Company({company}) {
                 src={'/static/images/company_logo/'+company.ticker.toLowerCase()+'.webp'}
                 alt=''
                 style={{ width: '45px', height: '45px' }}
-                className='rounded-circle'
+                
               />
               <div className='ms-3'>
                 <p className='fw-bold mb-1'>{company.name}</p>
@@ -23,7 +23,11 @@ export default function Company({company}) {
             </a>
           </td>
           <td>
-            <p className='fw-normal mb-1'>{formatMktCp(company.market_cap)}</p>
+            <p className='fw-normal mb-1'>$ {formatMktCp(company.market_cap)}</p>
+            
+          </td>
+          <td>
+            <p className='fw-normal mb-1'>$ {Math.round(company.share_price*100)/100}</p>
             
           </td>
           
