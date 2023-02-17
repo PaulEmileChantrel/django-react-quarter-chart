@@ -14,7 +14,7 @@ function NaviBar (){
                 height="50"
                 className="d-inline-block align-center"
                 />{' '}
-                Quantum Charts
+                Quarter Charts
             </Navbar.Brand>
             </Container>
         </Navbar>)
