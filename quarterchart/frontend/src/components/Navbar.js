@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 function NaviBar (){
     return (<Navbar bg="dark" variant="dark">
             <Container>
-            <Navbar.Brand href="/">
+            <Navbar.Brand href="/" className="text-white">
                 <img
                 alt=""
                 src="/static/images/logo_v1.png"
