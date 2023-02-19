@@ -114,3 +114,27 @@ class GetCompanieInfoTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'Bad Request': 'ticker parameter not found in request'})
+        
+        
+import unittest
+from unittest.mock import patch,MagicMock
+from .get_data.get_yahoo_info import get_mkt_cap
+
+
+class TestGetMktCap(unittest.TestCase):
+   
+   
+    @patch('api.get_data.get_yahoo_info.yf.Ticker')
+    def test_get_mkt_cap(self, mock_ticker):
+        mock_info = {'market_cap': 1000000000}
+        mock_stock = MagicMock()
+        
+        mock_stock.fast_info = mock_info
+        mock_ticker.return_value = mock_stock
+        ticker = 'AAPL'
+
+        market_cap = get_mkt_cap(ticker)
+        mock_ticker.assert_called_once_with(ticker)
+        
+        self.assertEqual(market_cap, mock_info['market_cap'])
+        
