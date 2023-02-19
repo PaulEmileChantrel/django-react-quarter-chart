@@ -47,12 +47,12 @@ export default function HomePage () {
 
     }
     useEffect(() => {
-        loadCompanyList()
+        
         loadCompanyEarningsList()
     },[]);
     useEffect(() => {
         let timerId;
-        
+        loadCompanyList()
         
         if (name) {
           clearTimeout(timerId);
