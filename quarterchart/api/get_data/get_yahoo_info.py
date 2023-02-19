@@ -54,6 +54,7 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     stock = Ticker(ticker)
     asset_profile = stock.asset_profile
     asset_profile = asset_profile[ticker]
+    print()
     
     earnings = stock.calendar_events
     
@@ -77,14 +78,15 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     infos['next_earnings_date'] = earnings
     
     marketCap = stock.summary_detail
-    print(marketCap)
-    share_price = marketCap[ticker]['open']
+    
+    share_price = stock.financial_data[ticker]['currentPrice']
+    ysd_close_price = marketCap[ticker]['previousClose']
     currency = marketCap[ticker]['currency']
     marketCap = marketCap[ticker]['marketCap']
     
     
     
-    return infos,marketCap,share_price,currency
+    return infos,marketCap,share_price,currency,one_day_variation
 
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
@@ -150,4 +152,4 @@ def get_financial_yahoo_info2(ticker:str)-> list:
 
 if __name__ == '__main__':
     #main('TSLA')
-    get_general_yahoo_info2('2222.SR')
+    get_general_yahoo_info2('TSLA')

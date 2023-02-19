@@ -72,7 +72,7 @@ def download_info(companieModel):
     info_downloaded,finance_downloaded = False,False
     #general infos
     try:
-        infos,market_cap,share_price,currency = get_general_yahoo_info2(companieModel.ticker)
+        infos,market_cap,share_price,one_day_variation,currency = get_general_yahoo_info2(companieModel.ticker)
         
     except Exception as e:
         print(e)
@@ -85,6 +85,7 @@ def download_info(companieModel):
         #print(infos)
         companieModel.image_link = f'/static/images/company_logo/{companieModel.ticker.lower()}.webp'
         companieModel.share_price = share_price
+        companieModel.one_day_variation = one_day_variation
         sector = infos['sector']
         summary = infos['longBusinessSummary']
         industry = infos['industry']
@@ -142,6 +143,7 @@ class Companie(models.Model):
     image_link = models.CharField(max_length=250,default='')
     market_cap = models.FloatField(default=0)
     share_price = models.FloatField(default=0)
+    one_day_variation = models.FloatField(default=0)
     
     def __str__(self):
         return self.name
