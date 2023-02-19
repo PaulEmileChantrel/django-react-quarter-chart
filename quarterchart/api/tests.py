@@ -5,8 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Companie
-from .serializers import CompanieSerializer
+from .models import Companie,CompanieInfo
+from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer
 from django.db.models import Q
 
 class CompanieViewTestCase(APITestCase):
@@ -79,3 +79,38 @@ class FilterCompanieViewTestCase(TestCase):
         self.assertEqual(len(response.data), 2)
         response = self.client.get(url, {'name': 'a'})
         self.assertEqual(len(response.data), 2)
+        
+class GetCompanieInfoTestCase(APITestCase):
+    def setUp(self):
+        self.apple = Companie(
+            name='Apple Inc.',
+            ticker='AAPL',
+            data_was_downloaded = True,
+            market_cap=200000000000
+        )
+        self.apple.save()
+        self.apple_info = CompanieInfo(
+            name=self.apple,
+            summary='Apple is a multinational technology company.'
+        )
+        self.apple_info.save()
+
+    def test_get_company_info_by_ticker(self):
+        url = reverse('get-companie-info')
+        response = self.client.get(url, {'ticker': 'AAPL'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Apple Inc.')
+        self.assertEqual(response.data['summary'], 'Apple is a multinational technology company.')
+        self.assertEqual(response.data['market_cap'], 200000000000)
+
+    def test_get_company_info_with_invalid_ticker(self):
+        url = reverse('get-companie-info')
+        response = self.client.get(url, {'ticker': 'INVALID'})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'Ticker Not Found': 'Invalid Request'})
+
+    def test_get_company_info_with_missing_ticker(self):
+        url = reverse('get-companie-info')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'Bad Request': 'ticker parameter not found in request'})
