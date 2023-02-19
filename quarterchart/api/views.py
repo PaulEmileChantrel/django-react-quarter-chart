@@ -5,9 +5,8 @@ from rest_framework.response import Response
 from .models import *
 from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer,NextEarningsSerializer
-from .get_data.get_yahoo_info import get_mkt_cap,get_next_earnings_date
 from datetime import datetime,date,timedelta
-from .load_companies import load_companies
+
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.filter(~Q(market_cap=0)).order_by('-market_cap')
