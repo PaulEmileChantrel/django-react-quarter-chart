@@ -12,6 +12,8 @@ export default function CompaniesList({companies_list}){
             <th scope='col'>Name</th>
             <th scope='col'>Market Cap.</th>
             <th scope='col'>Share</th>
+            <th scope='col'>1D Var.</th>
+
             
             </tr>
         </MDBTableHead>

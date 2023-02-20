@@ -81,6 +81,8 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     
     share_price = stock.financial_data[ticker]['currentPrice']
     ysd_close_price = marketCap[ticker]['previousClose']
+    one_day_variation = (share_price/ysd_close_price)*100-100
+    one_day_variation = round(one_day_variation,2)
     currency = marketCap[ticker]['currency']
     marketCap = marketCap[ticker]['marketCap']
     

@@ -25,13 +25,12 @@ export default function HomePage () {
 
     function loadCompanyList() {
         fetch('/api').then(response => response.json())
-        .then(data => SetCompaniesList(data))
+        .then(data => {console.log(data),SetCompaniesList(data)})
         .catch(error => console.log(error))
     }
     function loadCompanyEarningsList() {
         fetch('/api/next-earnings').then(response => response.json())
-        .then(data => {console.log(data),
-                setEarningsList(data)})
+        .then(data =>setEarningsList(data))
         .catch(error => console.log(error))
     }
     function searchCompanie(){

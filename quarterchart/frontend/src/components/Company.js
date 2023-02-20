@@ -1,7 +1,7 @@
 import React from 'react'
 import formatMktCp from './formatMktCap';
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-
+import { BiCaretUpCircle,BiCaretDownCircle,BiCaretRightCircle } from 'react-icons/bi';
 export default function Company({company}) {
     
     return (
@@ -29,6 +29,17 @@ export default function Company({company}) {
           <td>
             <p className='fw-normal mb-1'>$ {Math.round(company.share_price*100)/100}</p>
             
+          </td>
+          <td>
+            
+            {company.one_day_variation==0?
+              
+              <p className='fw-normal mb-1 text-muted'><BiCaretRightCircle style={ { verticalAlign: 'middle' ,paddingBottom:'2px'}} /> {company.one_day_variation} %  </p>
+            :company.one_day_variation>0?
+              <p className='fw-normal mb-1 text-success'><BiCaretUpCircle style={ { verticalAlign: 'middle' }}/>  {company.one_day_variation} %</p>
+            :<p className='fw-normal mb-1 text-danger'><BiCaretDownCircle style={ { verticalAlign: 'middle' }}/>  {company.one_day_variation} %</p>}
+            
+
           </td>
           
         </tr>
