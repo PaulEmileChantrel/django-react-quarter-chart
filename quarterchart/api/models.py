@@ -2,7 +2,7 @@ from django.db import models
 from picklefield.fields import PickledObjectField
 import requests
 import time,json
-from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2
+from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2,get_mkt_cap,get_share_price
 import datetime
 from config import API_KEY
 import pytz
@@ -22,13 +22,35 @@ def convertInUSD(currency):
       #print(utc.localize(yesterday), utc.localize(last_currency_update))
       if last_currency_update > utc.localize(yesterday):
          return currency_in_db.value
-      
+      else:
+          currency_value = api_call(currency)
+          currency_in_db.value = currency_value
+          currency_in_db.last_updated_at = datetime.datetime.now()
+          currency_in_db.save()
+          return currency_value
    currency_value = api_call(currency)
    currency_in_db = Currency(name=currency,ticker=currency, value=currency_value,last_updated_at=datetime.datetime.now())
    currency_in_db.save()
    return currency_value
       
-   
+def daily_update():
+    
+    companies = Companie.objects.all()
+    for cpn in companies:
+        ticker = cpn.ticker
+        print(ticker)
+        mkt_cap = get_mkt_cap(ticker)
+        share,var,currency = get_share_price(ticker)
+        if currency != 'USD':
+            mult = convertInUSD(currency)
+            mkt_cap*=mult
+            share*=mult
+        cpn.market_cap = mkt_cap
+        cpn.share_price = share
+        cpn.one_day_variation = var
+        cpn.save()
+        
+
    
 def api_call(currency):
    
@@ -259,3 +281,9 @@ class Currency(models.Model):
     ticker = models.CharField(max_length=10,unique=True)
     last_updated_at = models.DateTimeField(auto_now_add=True)
     value = models.FloatField(default=0)
+    
+    def __str__(self):
+        return self.name
+    
+    
+#daily_update()

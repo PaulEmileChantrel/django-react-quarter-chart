@@ -90,6 +90,15 @@ def get_general_yahoo_info2(ticker:str)-> dict:
     
     return infos,marketCap,share_price,currency,one_day_variation
 
+def get_share_price(ticker:str)-> list:
+    stock = Ticker(ticker)
+    share_price = stock.financial_data[ticker]['currentPrice']
+    ysd_close_price = stock.summary_detail[ticker]['previousClose']
+    currency = stock.summary_detail[ticker]['currency']
+    one_day_variation = (share_price/ysd_close_price)*100-100
+    one_day_variation = round(one_day_variation,2)
+    return share_price,one_day_variation,currency
+    
 def get_mkt_cap(ticker:str)-> dict:
     stock = yf.Ticker(ticker)
     infos = stock.fast_info
