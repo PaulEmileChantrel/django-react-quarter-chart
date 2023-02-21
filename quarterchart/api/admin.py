@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Companie, CompanieInfo,CompanieBalanceSheet,CompanieCashFlow, CompanieIncomeStatement,Currency
+from .models import Companie, CompanieInfo,CompanieBalanceSheet,CompanieCashFlow, CompanieIncomeStatement,Currency,DailyUpdateStatus
 # Register your models here.
 
 class CompanieAdmin(admin.ModelAdmin):
@@ -29,9 +29,15 @@ class CurrencyAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": (['name','ticker','last_updated_at','value'])}),
     )
+    
+class DailyUpdatesAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {"fields": (['name'])}),)
+    
 admin.site.register(Companie, CompanieAdmin)
 admin.site.register(CompanieInfo, CompanieInfoAdmin)
 admin.site.register(CompanieBalanceSheet, CompanieBalanceSheetAdmin)
 admin.site.register(CompanieCashFlow, CompanieCashFlowAdmin)
 admin.site.register(CompanieIncomeStatement, CompanieIncomeStatementAdmin)
 admin.site.register(Currency, CurrencyAdmin)
+admin.site.register(DailyUpdateStatus, DailyUpdatesAdmin)

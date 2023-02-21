@@ -286,15 +286,17 @@ class Currency(models.Model):
         return self.name
     
 def daily_update():
+    print('calling daily updates')
     last_update = DailyUpdateStatus.objects.all()[0]
-    
+    utc=pytz.UTC
     today = datetime.datetime.now()
-    if last_update.last_updated_at < today:
+    if last_update.last_updated_at < utc.localize(today):
         last_update.last_updated_at = today #we update directly to avoid concurent updates
         last_update.save()
         update_companies()
         
         
 class DailyUpdateStatus(models.Model):
-    last_updated_at = models.DateTimeField(default=yesterday)
-#daily_update()
+    name = models.CharField(max_length=100,unique=True)
+    last_updated_at = models.DateTimeField(auto_now_add=True)
+daily_update()
