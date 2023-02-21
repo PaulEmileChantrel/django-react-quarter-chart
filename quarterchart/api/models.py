@@ -33,7 +33,7 @@ def convertInUSD(currency):
    currency_in_db.save()
    return currency_value
       
-def daily_update():
+def update_companies():
     
     companies = Companie.objects.all()
     for cpn in companies:
@@ -285,6 +285,16 @@ class Currency(models.Model):
     def __str__(self):
         return self.name
     
+def daily_update():
+    last_update = DailyUpdateStatus.objects.all()[0]
+    
+    today = datetime.datetime.now()
+    if last_update.last_updated_at < today:
+        last_update.last_updated_at = today #we update directly to avoid concurent updates
+        last_update.save()
+        update_companies()
+        
+        
 class DailyUpdateStatus(models.Model):
     last_updated_at = models.DateTimeField(default=yesterday)
 #daily_update()
