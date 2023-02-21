@@ -285,5 +285,6 @@ class Currency(models.Model):
     def __str__(self):
         return self.name
     
-    
+class DailyUpdateStatus(models.Model):
+    last_updated_at = models.DateTimeField(default=yesterday)
 #daily_update()
