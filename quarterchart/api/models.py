@@ -39,16 +39,20 @@ def update_companies():
     for cpn in companies:
         ticker = cpn.ticker
         print(ticker)
-        mkt_cap = get_mkt_cap(ticker)
-        share,var,currency = get_share_price(ticker)
-        if currency != 'USD':
-            mult = convertInUSD(currency)
-            mkt_cap*=mult
-            share*=mult
-        cpn.market_cap = mkt_cap
-        cpn.share_price = share
-        cpn.one_day_variation = var
-        cpn.save()
+        try:
+            mkt_cap = get_mkt_cap(ticker)
+            share,var,currency = get_share_price(ticker)
+        except:
+            print(f"error for {ticker}")
+        else:
+            if currency != 'USD':
+                mult = convertInUSD(currency)
+                mkt_cap*=mult
+                share*=mult
+            cpn.market_cap = mkt_cap
+            cpn.share_price = share
+            cpn.one_day_variation = var
+            cpn.save()
         
 
    
@@ -290,7 +294,8 @@ def daily_update():
     last_update = DailyUpdateStatus.objects.all()[0]
     utc=pytz.UTC
     today = datetime.datetime.now()
-    if last_update.last_updated_at < utc.localize(today):
+    yesterday  = today - datetime.timedelta(days=1)
+    if last_update.last_updated_at < utc.localize(yesterday):
         last_update.last_updated_at = today #we update directly to avoid concurent updates
         last_update.save()
         update_companies()
