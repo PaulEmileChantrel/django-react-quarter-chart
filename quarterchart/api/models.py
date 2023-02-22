@@ -269,6 +269,51 @@ class DailyUpdateStatus(models.Model):
 daily_update()
 
 
+
+def merge_df(new_df,old_df):
+    pass
+
+def update_financial_info(ticker,income_stmt,quarterly_income_stmt,balance_sheet,quarterly_balance_sheet, cashflow, quarterly_cashflow):
+    old_income_stmt = CompanieIncomeStatement.objects.get(ticker=ticker)
+    old_annual_income_statement = old_income_stmt.full_annual_income_statement
+    old_quarterly_income_statement = old_income_stmt.full_quarterly_income_statement
+    new_annual_income_statement = merge_df(income_stmt,old_annual_income_statement)
+    new_quarterly_income_statement = merge_df(quarterly_income_stmt,old_quarterly_income_statement)
+    new_light_annual_income_statement = shrink_income_stmt(new_annual_income_statement)
+    new_light_quarterly_income_statement = shrink_income_stmt(new_quarterly_income_statement)
+    old_income_stmt.full_annual_income_statement = new_annual_income_statement
+    old_income_stmt.full_quarterly_income_statement = new_quarterly_income_statement
+    old_income_stmt.light_annual_income_statement = new_light_annual_income_statement
+    old_income_stmt.light_quarterly_income_statement = new_light_quarterly_income_statement
+    old_income_stmt.save()
+    
+    old_balance_sheet = CompanieBalanceSheet.objects.get(ticker=ticker)
+    old_annual_balance_sheet = old_balance_sheet.full_annual_balance_sheet
+    old_quarterly_balance_sheet = old_balance_sheet.full_quarterly_balance_sheet
+    new_annual_balance_sheet = merge_df(balance_sheet,old_annual_balance_sheet)
+    new_quarterly_balance_sheet = merge_df(quarterly_balance_sheet,old_quarterly_balance_sheet)
+    new_light_annual_balance_sheet = shrink_balance_sheet(new_annual_balance_sheet)
+    new_light_quarterly_balance_sheet = shrink_balance_sheet(new_quarterly_balance_sheet)
+    old_balance_sheet.full_annual_balance_sheet = new_annual_balance_sheet
+    old_balance_sheet.full_quarterly_balance_sheet = new_quarterly_balance_sheet
+    old_balance_sheet.light_annual_balance_sheet = new_light_annual_balance_sheet
+    old_balance_sheet.light_quarterly_balance_sheet = new_light_quarterly_balance_sheet
+    old_balance_sheet.save()
+    
+    old_cashflow = CompanieCashFlow.objects.get(ticker=ticker)
+    old_annual_cashflow = old_cashflow.full_annual_cash_flow
+    old_quarterly_cashflow = old_cashflow.full_quarterly_cash_flow
+    new_annual_cashflow = merge_df(cashflow,old_annual_cashflow)
+    new_quarterly_cashflow = merge_df(quarterly_cashflow,old_quarterly_cashflow)
+    new_light_annual_cashflow = shrink_cashflow(new_annual_cashflow)
+    new_light_quarterly_cashflow = shrink_cashflow(new_quarterly_cashflow)
+    old_cashflow.full_annual_cash_flow = new_annual_cashflow
+    old_cashflow.full_quarterly_cash_flow = new_quarterly_cashflow
+    old_cashflow.light_annual_cash_flow = new_light_annual_cashflow
+    old_cashflow.light_quarterly_cash_flow = new_light_quarterly_cashflow
+    old_cashflow.save()
+    
+    
 def updateAfterEarninigs():
     companies = Companie.objects.filter(next_earnings_date__lt = yesterday) #lower than yesterday give us more safety knowing the earnings are available
     if companies.exists():
