@@ -211,3 +211,4 @@ class NextEarningsView(generics.ListAPIView):
     
 
 
+#updateAfterEarninigs() 
