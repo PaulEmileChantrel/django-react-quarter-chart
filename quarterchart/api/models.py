@@ -1,12 +1,10 @@
 from django.db import models
 from picklefield.fields import PickledObjectField
-import requests
-import time,json
-from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2,get_mkt_cap,get_share_price
+from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2,get_mkt_cap,get_share_price,get_next_earnings_date
 import datetime
 from config import API_KEY
 import pytz
-
+from .model_utils import *
 
 def convertInUSD(currency):
    #1) check db for currency value
@@ -56,40 +54,6 @@ def update_companies():
         
 
    
-def api_call(currency):
-   
-   url = f"https://api.apilayer.com/exchangerates_data/convert?to=USD&from={currency}&amount=1"
-
-   payload = {}
-   headers= {
-   "apikey": API_KEY,
-   }
-
-   response = requests.request("GET", url, headers=headers, data = payload)
-
-   
-   result = response.text
-   result = json.loads(result)
-   result = result['info']['rate']
-   return result
-
-def shrink_income_stmt(df):
-    rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA'])
-    rows = list(rows.intersection(set(df.index)))
-    return df.loc[rows]
-
-def shrink_balance_sheet(df):
-    rows = set(['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity'])
-    rows = list(rows.intersection(set(df.index)))
-    return df.loc[rows]
-    
-    
-
-def shrink_cashflow(df):
-    rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Beginning Cash Position','End Cash Position','Free Cash Flow'])
-    rows = list(rows.intersection(set(df.index)))
-    return df.loc[rows]
-
 
 
 #Download data from Yahoo Finance and put it in the models
@@ -181,8 +145,6 @@ class Companie(models.Model):
             self.data_was_downloaded = result
             super(Companie, self).save()
         
-def yesterday():
-    return datetime.date.today() - datetime.timedelta(days=1)
 class CompanieInfo(models.Model):
     name = models.OneToOneField(Companie,related_name='compagnie_info', on_delete=models.CASCADE)
     ticker = models.CharField(max_length=100,unique=True)
@@ -305,3 +267,23 @@ class DailyUpdateStatus(models.Model):
     name = models.CharField(max_length=100,unique=True)
     last_updated_at = models.DateTimeField(auto_now_add=True)
 daily_update()
+
+
+def updateAfterEarninigs():
+    companies = Companie.objects.filter(next_earnings_date__lt = yesterday) #lower than yesterday give us more safety knowing the earnings are available
+    if companies.exists():
+        for company in companies:
+            ticker = company.ticker
+            try:
+                income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financial_yahoo_info2(ticker)
+            except Exception as e:
+                print(e)
+                successful_update = False
+            else:
+                successful_update = update_financial_info(ticker,income_stmt,quarterly_income_stmt,balance_sheet,quarterly_balance_sheet, cashflow, quarterly_cashflow)
+            if successful_update:
+                next_earning = get_next_earnings_date(ticker)
+                company.next_earnings_date = next_earning
+                company.save()
+
+            
