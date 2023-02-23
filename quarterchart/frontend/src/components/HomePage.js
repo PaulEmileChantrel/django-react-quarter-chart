@@ -13,24 +13,61 @@ import {useState,useRef,useEffect} from 'react'
 import CompaniesList from './CompaniesList';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import EarningsList from './EarningsList';
+import EarningsWeek from './EarningsWeek';
 
 export default function HomePage () {
     const [name,SetName] = useState('') 
     const [companiesList,SetCompaniesList] = useState([])
-    const [earningsList,setEarningsList] = useState([])
+    const [earningsWeek,setEarningsWeeks] = useState([])
     const nameRef = useRef() 
     
     
-
+    function order_by_weeks(data) {
+        Date.prototype.getWeek = function() {
+            const onejan = new Date(this.getFullYear(), 0, 1);
+            const week = Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            return week - 1;
+        };
+        
+        const first_date = new Date(data[0].next_earnings_date);
+        let first_week = first_date.getWeek();
+        let week = []
+        let weeks = []
+        let date,date_str,item;
+    
+        console.log(first_week)
+        for (let i = 0; i < data.length; i++) {
+            date = new Date(data[i].next_earnings_date);
+            date_str = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+            item = {id:data[i].id,next_earnings_date:date_str,ticker:data[i].ticker}
+            if (date.getWeek() == first_week) {
+                week.push(item)
+            }
+            
+            else {
+                weeks.push(week)
+                week = []
+                week.push(item)
+                first_week = date.getWeek()
+            }
+        
+        }
+        
+        return weeks
+        
+          
+          
+          
+    }
     function loadCompanyList() {
         fetch('/api').then(response => response.json())
-        .then(data => {console.log(data),SetCompaniesList(data)})
+        .then(data => SetCompaniesList(data))
         .catch(error => console.log(error))
     }
     function loadCompanyEarningsList() {
         fetch('/api/next-earnings').then(response => response.json())
-        .then(data =>setEarningsList(data))
+        .then(data =>order_by_weeks(data))
+        .then(data => {console.log(data),setEarningsWeeks(data)})
         .catch(error => console.log(error))
     }
     function searchCompanie(){
@@ -93,7 +130,7 @@ export default function HomePage () {
         <Grid item xs={3} align="center">
             <Grid item xs={12} align="center">
                 <Typography component="h6" variant="h6" > Next Earnings </Typography>
-                {earningsList? <EarningsList earningsList={earningsList}/>:null}
+                {earningsWeek? <EarningsWeek earningsWeek={earningsWeek}/>:null}
             </Grid>
         </Grid>
        </>

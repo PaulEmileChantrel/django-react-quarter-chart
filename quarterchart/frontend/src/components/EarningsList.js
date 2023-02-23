@@ -5,7 +5,9 @@ import Earnings from './Earnings';
 export default function EarningsList({earningsList}){
     
     return (
+       
         earningsList.map(earnings =>{
+            console.log(earnings);
             return <Earnings key={earnings.id}  company={earnings} />
         })
       )

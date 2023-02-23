@@ -41,4 +41,6 @@ class NextEarningsSerializer(serializers.ModelSerializer):
     class Meta:
         model =  CompanieInfo
         fields = ['ticker','id','next_earnings_date']
+        
+    
  
