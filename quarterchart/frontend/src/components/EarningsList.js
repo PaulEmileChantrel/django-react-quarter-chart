@@ -5,10 +5,13 @@ import Earnings from './Earnings';
 export default function EarningsList({earningsList}){
     
     return (
-       
-        earningsList.map(earnings =>{
-            console.log(earnings);
+        <tr>
+          
+        <td>
+        {earningsList.map(earnings =>{
+            
             return <Earnings key={earnings.id}  company={earnings} />
-        })
+        })}
+        </td></tr>
       )
 }

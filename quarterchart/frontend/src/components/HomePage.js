@@ -129,7 +129,7 @@ export default function HomePage () {
             
         <Grid item xs={3} align="center">
             <Grid item xs={12} align="center">
-                <Typography component="h6" variant="h6" > Next Earnings </Typography>
+                
                 {earningsWeek? <EarningsWeek earningsWeek={earningsWeek}/>:null}
             </Grid>
         </Grid>
