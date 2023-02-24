@@ -80,9 +80,13 @@ def df_to_array(df,rows,timeframe):
     
 
     for row in rows:
-       
-        row_list.append(list(df.loc[row]))
-    
+        try:
+            row_list.append(list(df.loc[row]))
+        except:
+            head.remove(row)
+    print(row_list)
+    if len(head)==1:
+        return []
     serialize_data = [head]+list(zip(*row_list))
     
     return serialize_data
@@ -109,16 +113,16 @@ class CompanyFirstChartData(APIView):
         
         if ticker != None:
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
-            companie_balance = CompanieCashFlow.objects.filter(ticker=ticker)
             #save session user timeframe
             if len(companie) > 0:
                 
                 data_q = companie[0].light_quarterly_income_statement
                 
                 data_a = companie[0].light_annual_income_statement
-               
+                print(data_a)
                 serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
                 serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
+                
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Ticker Not Found' : 'Invalid Request'},status=status.HTTP_404_NOT_FOUND)

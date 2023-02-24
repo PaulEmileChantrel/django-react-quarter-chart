@@ -54,7 +54,7 @@ export default function ChartPage () {
             <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
             <Link  href = {'/info/'+ticker} > more info</Link>
         </Grid>
-        {show?
+        {show ?
         <Grid item xs={12} align="center">
         { showQuarters ?
         <Grid item xs={12} align="center">
@@ -72,20 +72,13 @@ export default function ChartPage () {
         }
         
         <Grid item xs={12} align="center">
-        { showQuarters ?
+        { showQuarters?
         <Chart
             chartType="Bar"
             data={dataQ}
             width="80%"
             height="300px"
             legendToggle
-            options={
-                // Chart options
-                {
-                  title: "Quarterly Revenue & Operating Income",
-                  
-                }
-              }
             
         />
         : 
