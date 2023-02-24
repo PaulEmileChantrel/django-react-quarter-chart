@@ -6,7 +6,7 @@ import  displayWeek from './displayWeek';
 export default function EarningsWeek({earningsWeek}){
     
     return (<>
-        <MDBTable align='middle' >
+        <MDBTable align='middle' striped bordered>
         <MDBTableHead >
             <tr>
             <th scope='col'>Next Earnings</th>
@@ -18,8 +18,9 @@ export default function EarningsWeek({earningsWeek}){
         {earningsWeek.map((earningsList, index) =>{
             if (earningsList.length > 0) {
                
-            return (<tr key={index+1000}>
-                    <td> {displayWeek(index)} <EarningsList key={index}  earningsList={earningsList} /></td></tr>)
+            return (<><tr key={index+1000}>
+                    <td> {displayWeek(index)}</td></tr> <tr key={index+10000}>
+                    <td> {displayWeek(index)}<EarningsList key={index}  earningsList={earningsList} /></td></tr></>)
         }})}
         </MDBTableBody>
         </MDBTable>
