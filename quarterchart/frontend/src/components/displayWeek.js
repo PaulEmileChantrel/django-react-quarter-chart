@@ -3,13 +3,13 @@
 function displayWeek(index) {
 
     if (index == 0) { 
-        return 'This week';
+        return 'This Week :';
     }
     else if (index == 1) { 
-        return 'Next week';
+        return 'Next Week :';
     }
     else {
-        return 'In '+ index+ ' weeks';
+        return 'In '+ index+ ' Weeks : ';
     }
 
 }

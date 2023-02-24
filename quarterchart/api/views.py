@@ -84,7 +84,7 @@ def df_to_array(df,rows,timeframe):
             row_list.append(list(df.loc[row]))
         except:
             head.remove(row)
-    print(row_list)
+    
     if len(head)==1:
         return []
     serialize_data = [head]+list(zip(*row_list))

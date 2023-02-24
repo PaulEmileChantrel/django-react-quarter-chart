@@ -16,10 +16,11 @@ export default function EarningsWeek({earningsWeek}){
         </MDBTableHead>
         <MDBTableBody >
         {earningsWeek.map((earningsList, index) =>{
-            
-            return (<tr>
-                    <td> {displayWeek(index)} <EarningsList key={earningsList[0].id}  earningsList={earningsList} /></td></tr>)
-        })}
+            if (earningsList.length > 0) {
+               
+            return (<tr key={index+1000}>
+                    <td> {displayWeek(index)} <EarningsList key={index}  earningsList={earningsList} /></td></tr>)
+        }})}
         </MDBTableBody>
         </MDBTable>
       </>)
