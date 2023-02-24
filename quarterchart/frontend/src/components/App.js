@@ -9,7 +9,7 @@ import NaviBar from './Navbar';
 function App () {
     
         return (
-        <Grid container spacing={1}>
+        <Grid container spacing={7} >
             <Grid item xs={12} >
                 <NaviBar/>
             </Grid>

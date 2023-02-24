@@ -6,15 +6,15 @@ import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-reac
 export default function EarningsWeek({earningsWeek}){
     
     return (<>
-        <MDBTable align='middle' hover>
-        <MDBTableHead>
+        <MDBTable align='middle' >
+        <MDBTableHead >
             <tr>
             <th scope='col'>Next Earnings</th>
             
             
             </tr>
         </MDBTableHead>
-        <MDBTableBody>
+        <MDBTableBody >
         {earningsWeek.map((earningsList, index) =>{
             
             return (<><p>Week {index}</p><EarningsList key={earningsList[0].id}  earningsList={earningsList} /></>)

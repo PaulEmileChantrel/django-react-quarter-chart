@@ -106,13 +106,13 @@ export default function HomePage () {
   
     return (
         <>
-        <Grid item xs={9} align="center">
-            <Grid item xs={2} align="center"></Grid>
-            <Grid item xs={8} align="center">
+        <Grid item xs={9} md={9} align="center"  >
+            
+            <Grid item xs={10} align="center">
                 <Typography component="h5" variant="h5" > Companies List</Typography>
             </Grid>
             
-            <Grid item xs={8} align="center">
+            <Grid item xs={10} align="center" >
                 <FormControl component="fieldset" >
                     <TextField required={true} type="text" inputRef={nameRef}  onChange={(event) => SetName(event.target.value)}/>
                     <FormHelperText >
@@ -121,13 +121,14 @@ export default function HomePage () {
                 </FormControl>
                 
             </Grid>
-            <Grid item xs={8} align="center">
+            
+            <Grid item xs={10} align="center"  style={{ marginTop: '3rem' }}>
                 {companiesList? <CompaniesList companies_list={companiesList}/>:null}
             </Grid>
-            <Grid item xs={2} align="center"></Grid>
+            
         </Grid>
             
-        <Grid item xs={3} align="center">
+        <Grid item xs={3} md={2} align="center">
             <Grid item xs={12} align="center">
                 
                 {earningsWeek? <EarningsWeek earningsWeek={earningsWeek}/>:null}
