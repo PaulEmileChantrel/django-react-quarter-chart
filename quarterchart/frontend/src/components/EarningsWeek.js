@@ -1,7 +1,7 @@
 import React from 'react';
 import EarningsList from './EarningsList';
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-
+import  displayWeek from './displayWeek';
 
 export default function EarningsWeek({earningsWeek}){
     
@@ -17,7 +17,8 @@ export default function EarningsWeek({earningsWeek}){
         <MDBTableBody >
         {earningsWeek.map((earningsList, index) =>{
             
-            return (<><p>Week {index}</p><EarningsList key={earningsList[0].id}  earningsList={earningsList} /></>)
+            return (<tr>
+                    <td> {displayWeek(index)} <EarningsList key={earningsList[0].id}  earningsList={earningsList} /></td></tr>)
         })}
         </MDBTableBody>
         </MDBTable>
