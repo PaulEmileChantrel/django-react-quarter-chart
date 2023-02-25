@@ -38,16 +38,14 @@ class GetCompanieInfo(APIView):
 class CreateCompanieView(APIView):
     serializer_class = CreateCompanieSerializer
 
-    
-    
     def post(self, request,format = None):
         #does the user has a session?
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-
+        
         # is the data sent valid?
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid() and self.request.user.is_staff: #check if the user is admin
             #if the company exist, the serializer will not be valid
             name = serializer.data.get('name')
             ticker = serializer.data.get('ticker')
