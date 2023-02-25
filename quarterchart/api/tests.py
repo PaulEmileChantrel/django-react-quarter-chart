@@ -138,3 +138,27 @@ class TestGetMktCap(unittest.TestCase):
         
         self.assertEqual(market_cap, mock_info['market_cap'])
         
+        
+class CreateCompanieViewTestCase(APITestCase):
+    url = reverse('create_companie')
+
+    def test_create_companie_successfully(self):
+        data = {'name': 'Test Company', 'ticker': 'TEST'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Companie.objects.count(), 1)
+        self.assertEqual(Companie.objects.get().name, 'Test Company')
+        self.assertEqual(Companie.objects.get().ticker, 'TEST')
+
+    def test_create_companie_already_exists(self):
+        # Create a test company
+        c1 = Companie(name='Test Company', ticker='TEST',data_was_downloaded=True)
+        c1.save()
+        data = {'name': 'Test Company', 'ticker': 'TEST'}
+        response = self.client.post(self.url, data, format='json')
+        print(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Companie.objects.count(), 1)
+
+
+

@@ -3,7 +3,7 @@ from .views import CompanieView,CreateCompanieView,FilterCompanieView,GetCompani
 
 urlpatterns = [
     path('', CompanieView.as_view(),name='companielist'),
-    path('add',CreateCompanieView.as_view()),
+    path('add',CreateCompanieView.as_view(),name='create_companie'),
     path('filterCompany/',FilterCompanieView.as_view(),name='filter-companies'),
     path('get-company-info',GetCompanieInfo.as_view(),name='get-companie-info'),
     path('get-first-company-chart',CompanyFirstChartData.as_view()),

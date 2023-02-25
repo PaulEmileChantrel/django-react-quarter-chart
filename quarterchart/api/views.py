@@ -48,19 +48,13 @@ class CreateCompanieView(APIView):
         # is the data sent valid?
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
+            #if the company exist, the serializer will not be valid
             name = serializer.data.get('name')
             ticker = serializer.data.get('ticker')
-
-            #check if company already exists
-            queryset = Companie.objects.filter(ticker=ticker)
-            if queryset.exists():
-                company = queryset.first()
-                # the company already exists
-                return Response(CompanieSerializer(company).data,status=status.HTTP_208_ALREADY_REPORTED)
-            else:
-                company = Companie(name=name,ticker=ticker)
-                company.save()
-                return Response(CompanieSerializer(company).data,status=status.HTTP_201_CREATED)
+            
+            company = Companie(name=name,ticker=ticker)
+            company.save()
+            return Response(CompanieSerializer(company).data,status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
