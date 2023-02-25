@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from .models import Companie,CompanieInfo
-from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer
+from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer
 from django.db.models import Q
 
 class CompanieViewTestCase(APITestCase):
@@ -139,26 +139,26 @@ class TestGetMktCap(unittest.TestCase):
         self.assertEqual(market_cap, mock_info['market_cap'])
         
         
-class CreateCompanieViewTestCase(APITestCase):
-    url = reverse('create_companie')
+# class CreateCompanieViewTestCase(APITestCase):
+#     url = reverse('create_companie')
 
-    def test_create_companie_successfully(self):
-        data = {'name': 'Test Company', 'ticker': 'TEST'}
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Companie.objects.count(), 1)
-        self.assertEqual(Companie.objects.get().name, 'Test Company')
-        self.assertEqual(Companie.objects.get().ticker, 'TEST')
+#     def test_create_companie_successfully(self):
+#         data = {'name': 'Test Company', 'ticker': 'TEST'}
+#         response = self.client.post(self.url, data, format='json')
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         self.assertEqual(Companie.objects.count(), 1)
+#         self.assertEqual(Companie.objects.get().name, 'Test Company')
+#         self.assertEqual(Companie.objects.get().ticker, 'TEST')
 
-    def test_create_companie_already_exists(self):
-        # Create a test company
-        c1 = Companie(name='Test Company', ticker='TEST',data_was_downloaded=True)
-        c1.save()
-        data = {'name': 'Test Company', 'ticker': 'TEST'}
-        response = self.client.post(self.url, data, format='json')
-        print(response.content.decode('utf-8'))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(Companie.objects.count(), 1)
+#     def test_create_companie_already_exists(self):
+#         # Create a test company
+#         c1 = Companie(name='Test Company', ticker='TEST',data_was_downloaded=True)
+#         c1.save()
+#         data = {'name': 'Test Company', 'ticker': 'TEST'}
+#         response = self.client.post(self.url, data, format='json')
+#         print(response.content.decode('utf-8'))
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#         self.assertEqual(Companie.objects.count(), 1)
 
 
 from django.contrib.auth.models import User
@@ -197,3 +197,39 @@ class CreateCompanieViewTestCase(APITestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        
+from datetime import datetime, timedelta   
+
+
+class NextEarningsViewTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.today = datetime.today()
+        self.tomorrow = self.today + timedelta(days=1)
+        self.yesyesterday = self.today - timedelta(days=2)
+        self.c1 = Companie(name='Company 1',ticker='TK1',data_was_downloaded=True)
+        self.c1.save()
+        self.c2 = Companie(name='Company 2',ticker='TK2',data_was_downloaded=True)
+        self.c2.save()
+        self.company1 = CompanieInfo(
+            name=self.c1,
+            ticker = self.c1.ticker,
+            next_earnings_date=self.tomorrow,
+        )
+        self.company1.save()
+        
+        self.company2 = CompanieInfo(
+            name=self.c2,
+            ticker = self.c2.ticker,
+            next_earnings_date=self.yesyesterday,
+        )
+        self.company2.save()
+
+    def test_get_next_earnings(self):
+        response = self.client.get('/api/next-earnings')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        expected_data = NextEarningsSerializer(self.company1).data
+        self.assertEqual(response.data[0], expected_data)
