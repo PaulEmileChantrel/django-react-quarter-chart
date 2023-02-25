@@ -130,8 +130,8 @@ export default function HomePage () {
             
         </Grid>
             
-        <Grid item xs={3} md={2} align="center">
-            <Grid item xs={12} align="center">
+        <Grid item xs={3} md={3} align="center" >
+            <Grid item xs={10} align="center">
                 
                 {earningsWeek? <EarningsWeek earningsWeek={earningsWeek}/>:null}
             </Grid>
