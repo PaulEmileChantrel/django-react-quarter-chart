@@ -67,7 +67,7 @@ def df_to_array(df,rows,timeframe):
         dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) if date!='TTM' else 'TTM' for date in dates ]
     else:
         dates = list(df.columns)
-        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//4+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates if date!='TTM']
+        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month)//3+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates if date!='TTM']
     row_list = [dates]
     
 

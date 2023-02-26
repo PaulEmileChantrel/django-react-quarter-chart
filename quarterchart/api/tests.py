@@ -296,3 +296,43 @@ class CompanyFirstChartDataTestCase(APITestCase):
         self.assertTrue("quarter" in response.data)
         self.assertTrue('annual' in response.data)
         self.assertTrue('time_periode' in response.data)
+        
+from .views import df_to_array
+
+
+class DfToArrayTestCase(TestCase):
+    def setUp(self):
+        self.df = pd.DataFrame({
+            '2022-01-01 00:00:00': [100, 200, 300],
+            '2022-04-01 00:00:00': [400, 500, 600],
+            '2022-07-01 00:00:00': [700, 800, 900],
+            '2022-10-01 00:00:00': [1000, 1100, 1200],
+            'TTM': [1300, 1400, 1500]
+        }, index=['Total Revenue', 'Gross Profit', 'Operating Income'])
+
+    def test_df_to_array_quarterly(self):
+        rows = ['Total Revenue', 'Gross Profit', 'Operating Income']
+        timeframe = 'q'
+        expected_output = [['Dates', 'Total Revenue', 'Gross Profit', 'Operating Income'], ('Q1, 2022', 100, 200, 300), ('Q2, 2022', 400, 500, 600), ('Q3, 2022', 700, 800, 900), ('Q4, 2022', 1000, 1100, 1200)]
+        
+        self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
+
+    def test_df_to_array_annual(self):
+        rows = ['Total Revenue', 'Gross Profit', 'Operating Income']
+        timeframe = 'a'
+        expected_output = [['Dates', 'Total Revenue', 'Gross Profit', 'Operating Income'], ('2022', 100, 200, 300), ('2022', 400, 500, 600), ('2022', 700, 800, 900), ('2022', 1000, 1100, 1200), ('TTM', 1300, 1400, 1500)]
+        
+        self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
+
+    def test_df_to_array_missing_row(self):
+        rows = ['Total Revenue', 'Net Income', 'Operating Income']
+        timeframe = 'q'
+        expected_output = [['Dates', 'Total Revenue', 'Operating Income'], ('Q1, 2022', 100, 300), ('Q2, 2022', 400, 600), ('Q3, 2022', 700, 900), ('Q4, 2022', 1000, 1200)]
+        self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
+        
+        
+    def test_df_to_array_no_row(self):
+        rows = ['Net Income']
+        timeframe = 'q'
+        expected_output = []
+        self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
