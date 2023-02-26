@@ -211,10 +211,12 @@ class CompanieIncomeStatement(models.Model):
     light_num_row = models.IntegerField(default=0)
 
     def save(self):
-        self.full_num_col = self.full_annual_income_statement.shape[1]
-        self.full_num_row = self.full_annual_income_statement.shape[0]
-        self.light_num_col = self.light_annual_income_statement.shape[1]
-        self.light_num_row = self.light_annual_income_statement.shape[0]
+        
+        if not self.full_annual_income_statement.empty:
+            self.full_num_col = self.full_annual_income_statement.shape[1]
+            self.full_num_row = self.full_annual_income_statement.shape[0]
+            self.light_num_col = self.light_annual_income_statement.shape[1]
+            self.light_num_row = self.light_annual_income_statement.shape[0]
         super(CompanieIncomeStatement, self).save()
     def __str__(self):
         return self.name.name+ ' Income Statement'

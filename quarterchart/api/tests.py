@@ -5,8 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Companie,CompanieInfo
-from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer
+from .models import Companie,CompanieInfo,CompanieIncomeStatement
+from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer,CompanieIncomeSerializer
 from django.db.models import Q
 
 class CompanieViewTestCase(APITestCase):
@@ -243,7 +243,7 @@ class UpdateSessionTimePeriodeTestCase(APITestCase):
     @patch('django.contrib.sessions.backends.db.SessionStore.exists', return_value=False)
     def test_patch_creates_session(self, mock_exists):
         self.session_key = self.client.session.session_key
-        print(self.client.session.session_key)
+        
         response = self.client.patch(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(mock_exists.called)
@@ -262,3 +262,37 @@ class UpdateSessionTimePeriodeTestCase(APITestCase):
         response = self.client.patch(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.session['time_periode'], 'annual')
+        
+        
+from .views import CompanyFirstChartData
+from rest_framework.test import APIRequestFactory
+import pandas as pd
+
+class CompanyFirstChartDataTestCase(APITestCase):
+    def test_company_first_chart_data_without_ticker_in_db(self):
+        url = reverse('company_first_chart_data')
+        response = self.client.get(url, {'ticker': 'AAPL'})
+        
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue("Ticker Not Found" in response.data)
+        
+    def test_company_first_chart_data_without_ticker_in_request(self):
+        url = reverse('company_first_chart_data')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue("Bad Request" in response.data)
+       
+        
+    def test_company_first_chart_data_with_ticker_in_db(self):
+        c1 = Companie(name='Apple',ticker='AAPL',data_was_downloaded=True) 
+          
+        c1.save()
+        c1_income_statement = CompanieIncomeStatement(name=c1,ticker='AAPL',full_annual_income_statement=pd.DataFrame(),full_quarterly_income_statement=pd.DataFrame(),light_annual_income_statement=pd.DataFrame(),light_quarterly_income_statement=pd.DataFrame())
+        c1_income_statement.save()       
+        url = reverse('company_first_chart_data')
+        response = self.client.get(url, {'ticker': 'AAPL'})
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("quarter" in response.data)
+        self.assertTrue('annual' in response.data)
+        self.assertTrue('time_periode' in response.data)

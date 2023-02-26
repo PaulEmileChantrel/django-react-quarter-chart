@@ -104,14 +104,16 @@ class CompanyFirstChartData(APIView):
 
         
         if ticker != None:
+            
             companie = CompanieIncomeStatement.objects.filter(ticker=ticker)
+            
             #save session user timeframe
             if len(companie) > 0:
                 
                 data_q = companie[0].light_quarterly_income_statement
                 
                 data_a = companie[0].light_annual_income_statement
-                print(data_a)
+            
                 serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
                 serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
                 
