@@ -242,12 +242,13 @@ class UpdateSessionTimePeriodeTestCase(APITestCase):
 
     @patch('django.contrib.sessions.backends.db.SessionStore.exists', return_value=False)
     def test_patch_creates_session(self, mock_exists):
-        
+        self.session_key = self.client.session.session_key
+        print(self.client.session.session_key)
         response = self.client.patch(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(mock_exists.called)
-        print(self.client.session.session_key)
-        #self.assertTrue('sessionid' in self.client.session)
+        self.new_session_key = self.client.session.session_key
+        self.assertTrue(self.new_session_key!= self.session_key)
     
     def test_patch_sets_session_variable_to_quarter(self):
         self.client.session.create()
