@@ -8,6 +8,6 @@ urlpatterns = [
     path('get-company-info',GetCompanieInfo.as_view(),name='get-companie-info'),
     path('get-first-company-chart',CompanyFirstChartData.as_view()),
     path('get-other-company-chart',CompanyOtherChartData.as_view()),
-    path('update-session-time-periode',UpdateSessionTimePeriode.as_view()),
+    path('update-session-time-periode',UpdateSessionTimePeriode.as_view(),name='update_session_time_periode'),
     path('next-earnings',NextEarningsView.as_view()),
 ]

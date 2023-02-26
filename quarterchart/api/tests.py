@@ -233,3 +233,31 @@ class NextEarningsViewTestCase(TestCase):
         self.assertEqual(len(response.data), 1)
         expected_data = NextEarningsSerializer(self.company1).data
         self.assertEqual(response.data[0], expected_data)
+        
+class UpdateSessionTimePeriodeTestCase(APITestCase):
+    
+    def setUp(self):
+        self.url = reverse('update_session_time_periode')
+        self.data = {'time_periode': 'quarter'}
+
+    @patch('django.contrib.sessions.backends.db.SessionStore.exists', return_value=False)
+    def test_patch_creates_session(self, mock_exists):
+        
+        response = self.client.patch(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(mock_exists.called)
+        print(self.client.session.session_key)
+        #self.assertTrue('sessionid' in self.client.session)
+    
+    def test_patch_sets_session_variable_to_quarter(self):
+        self.client.session.create()
+        response = self.client.patch(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.session['time_periode'], 'quarter')
+    
+    def test_patch_sets_session_variable_to_annual(self):
+        self.client.session.create()
+        self.data['time_periode'] = 'annual'
+        response = self.client.patch(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.session['time_periode'], 'annual')
