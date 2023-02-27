@@ -380,3 +380,33 @@ class CompanyOtherChartDataTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'Bad Request': 'ticker parameter not found in request'})
+        
+
+class CompanieModelTest(TestCase):
+    
+    def setUp(self):
+        self.company = Companie(name="Test Company", ticker="AAPL")
+        #self.company.save()
+    
+    def test_str(self):
+        self.assertEqual(str(self.company), "Test Company")
+    
+    def test_save(self):
+        # Check that data_was_downloaded is False and no CompanieInfo exists
+        self.assertFalse(self.company.data_was_downloaded)
+        self.assertFalse(CompanieInfo.objects.filter(ticker=self.company.ticker).exists())
+        
+        # Call save method to download data
+        self.company.save()
+        
+        # Check that data_was_downloaded is True and a CompanieInfo object exists
+        self.assertTrue(self.company.data_was_downloaded)
+        self.assertTrue(CompanieInfo.objects.filter(ticker=self.company.ticker).exists())
+        
+        # Call save method again to ensure that it doesn't redownload the data
+        self.company.save()
+        self.assertTrue(CompanieInfo.objects.filter(ticker=self.company.ticker).exists())
+        
+        self.assertTrue(CompanieIncomeStatement.objects.filter(ticker=self.company.ticker).exists())
+        self.assertTrue(CompanieBalanceSheet.objects.filter(ticker=self.company.ticker).exists())
+        self.assertTrue(CompanieCashFlow.objects.filter(ticker=self.company.ticker).exists())

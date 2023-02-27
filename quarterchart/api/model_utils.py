@@ -16,6 +16,7 @@ def api_call(currency):
    
    result = response.text
    result = json.loads(result)
+   
    result = result['info']['rate']
    return result
 

@@ -63,7 +63,7 @@ def download_info(companieModel):
     info_downloaded,finance_downloaded = False,False
     #general infos
     try:
-        infos,market_cap,share_price,one_day_variation,currency = get_general_yahoo_info2(companieModel.ticker)
+        infos,market_cap,share_price,currency,one_day_variation = get_general_yahoo_info2(companieModel.ticker)
         
     except Exception as e:
         print(e)
