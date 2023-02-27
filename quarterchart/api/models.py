@@ -163,11 +163,15 @@ class CompanieInfo(models.Model):
         ticker = self.ticker
         
         company_balance_sheet = CompanieBalanceSheet.objects.filter(ticker=ticker)
-        company_balance_sheet[0].delete()
+        if company_balance_sheet.exists():
+            company_balance_sheet[0].delete()
+            
         company_income = CompanieIncomeStatement.objects.filter(ticker=ticker)
-        company_income[0].delete()
+        if company_income.exists():
+            company_income[0].delete()
         company_cash_flow = CompanieCashFlow.objects.filter(ticker=ticker)
-        company_cash_flow[0].delete()
+        if company_cash_flow.exists():
+            company_cash_flow[0].delete()
         super(CompanieInfo,self).delete()
         company = Companie.objects.get(ticker=ticker)
         #company = company[0]

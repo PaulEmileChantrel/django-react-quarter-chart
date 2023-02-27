@@ -410,3 +410,41 @@ class CompanieModelTest(TestCase):
         self.assertTrue(CompanieIncomeStatement.objects.filter(ticker=self.company.ticker).exists())
         self.assertTrue(CompanieBalanceSheet.objects.filter(ticker=self.company.ticker).exists())
         self.assertTrue(CompanieCashFlow.objects.filter(ticker=self.company.ticker).exists())
+        
+from django.utils import timezone    
+class CompanieInfoTestCase(TestCase):
+    def setUp(self):
+        self.company = Companie(name='Test Company', ticker='TEST',data_was_downloaded=True)
+        self.company.save()
+        self.today = timezone.now()
+        self.yesterday = self.today - timezone.timedelta(days=1)
+
+    def test_create_companie_info(self):
+        companie_info = CompanieInfo(
+            name=self.company,
+            ticker='TEST',
+            sector='Technology',
+            summary='This is a test company in the technology sector',
+            industry='Software',
+            website='http://www.testcompany.com',
+            last_updated_at=self.today,
+            next_earnings_date=self.yesterday
+        )
+        companie_info.save()
+        self.assertEqual(companie_info.__str__(), 'Test Company Infos')
+
+    def test_delete_companie_info(self):
+        companie_info = CompanieInfo(
+            name=self.company,
+            ticker='TEST',
+            sector='Technology',
+            summary='This is a test company in the technology sector',
+            industry='Software',
+            website='http://www.testcompany.com',
+            last_updated_at=self.today,
+            next_earnings_date=self.yesterday
+        )
+        companie_info.save()
+        companie_info.delete()
+        company = Companie.objects.get(ticker='TEST')
+        self.assertFalse(company.data_was_downloaded)
