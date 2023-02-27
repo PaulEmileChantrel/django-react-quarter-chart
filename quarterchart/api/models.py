@@ -187,10 +187,11 @@ class CompanieBalanceSheet(models.Model):
     light_num_col = models.IntegerField(default=0)
     light_num_row = models.IntegerField(default=0)
     def save(self):
-        self.full_num_col = self.full_annual_balance_sheet.shape[1]
-        self.full_num_row = self.full_annual_balance_sheet.shape[0]
-        self.light_num_col = self.light_annual_balance_sheet.shape[1]
-        self.light_num_row = self.light_annual_balance_sheet.shape[0]
+        if not self.full_annual_balance_sheet.empty:
+            self.full_num_col = self.full_annual_balance_sheet.shape[1]
+            self.full_num_row = self.full_annual_balance_sheet.shape[0]
+            self.light_num_col = self.light_annual_balance_sheet.shape[1]
+            self.light_num_row = self.light_annual_balance_sheet.shape[0]
         super(CompanieBalanceSheet, self).save()
     
     def __str__(self):
@@ -234,10 +235,11 @@ class CompanieCashFlow(models.Model):
     light_num_row = models.IntegerField(default=0)
 
     def save(self):
-        self.full_num_col = self.full_annual_cash_flow.shape[1]
-        self.full_num_row = self.full_annual_cash_flow.shape[0]
-        self.light_num_col = self.light_annual_cash_flow.shape[1]
-        self.light_num_row = self.light_annual_cash_flow.shape[0]
+        if not self.full_annual_cash_flow.empty:
+            self.full_num_col = self.full_annual_cash_flow.shape[1]
+            self.full_num_row = self.full_annual_cash_flow.shape[0]
+            self.light_num_col = self.light_annual_cash_flow.shape[1]
+            self.light_num_row = self.light_annual_cash_flow.shape[0]
         super(CompanieCashFlow, self).save()
 
     def __str__(self):

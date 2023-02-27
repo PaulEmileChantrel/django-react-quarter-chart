@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Companie,CompanieInfo,CompanieIncomeStatement
+from .models import Companie,CompanieInfo,CompanieIncomeStatement,CompanieBalanceSheet,CompanieCashFlow
 from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer,CompanieIncomeSerializer
 from django.db.models import Q
 
@@ -264,7 +264,7 @@ class UpdateSessionTimePeriodeTestCase(APITestCase):
         self.assertEqual(self.client.session['time_periode'], 'annual')
         
         
-from .views import CompanyFirstChartData
+from .views import CompanyOtherChartData
 from rest_framework.test import APIRequestFactory
 import pandas as pd
 
@@ -336,3 +336,47 @@ class DfToArrayTestCase(TestCase):
         timeframe = 'q'
         expected_output = []
         self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
+        
+        
+class CompanyOtherChartDataTestCase(TestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.client = Client()
+        self.ticker = 'AAPL'
+        # create test data
+        c1 = Companie(name='Apple',ticker='AAPL',data_was_downloaded=True) 
+        c1.save()
+        c1_income_statement = CompanieIncomeStatement(name=c1,ticker='AAPL',full_annual_income_statement=pd.DataFrame(),full_quarterly_income_statement=pd.DataFrame(),light_annual_income_statement=pd.DataFrame(),light_quarterly_income_statement=pd.DataFrame())
+        c1_income_statement.save()
+        c1_balance_sheet = CompanieBalanceSheet(name=c1,ticker='AAPL',full_annual_balance_sheet=pd.DataFrame(),full_quarterly_balance_sheet=pd.DataFrame(),light_annual_balance_sheet=pd.DataFrame(),light_quarterly_balance_sheet=pd.DataFrame())
+        c1_balance_sheet.save() 
+        c1_cash_flow = CompanieCashFlow(name=c1,ticker='AAPL',full_annual_cash_flow=pd.DataFrame(),full_quarterly_cash_flow=pd.DataFrame(),light_annual_cash_flow=pd.DataFrame(),light_quarterly_cash_flow=pd.DataFrame())
+        c1_cash_flow.save()   
+        
+    def test_get_company_data(self):
+        url = reverse('company_other_chart_data')
+        #url = f'/api/company-data/?ticker={self.ticker}'
+        request = self.factory.get(url, {'ticker': 'AAPL'})
+        response = CompanyOtherChartData.as_view()(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(response.data['quarter'], [[], [], [], [], [], [], [], [], []])
+        self.assertEqual(response.data['annual'], [[], [], [], [], [], [], [], [], []])
+
+    def test_get_company_data_with_invalid_ticker(self):
+        
+        url = reverse('company_other_chart_data')
+        request = self.factory.get(url,{'ticker': 'invalid_ticker'})
+        response = CompanyOtherChartData.as_view()(request)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'Ticker Not Found': 'Invalid Request'})
+
+    def test_get_company_data_with_missing_ticker_param(self):
+        url = reverse('company_other_chart_data')
+        request = self.factory.get(url)
+        response = CompanyOtherChartData.as_view()(request)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'Bad Request': 'ticker parameter not found in request'})
