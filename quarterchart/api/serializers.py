@@ -13,10 +13,10 @@ class CreateCompanieSerializer(serializers.ModelSerializer):
 
 
 class CompanieInfoSerializer(serializers.ModelSerializer):
-    
+    next_earnings_date = serializers.DateTimeField(format="%m-%d")
     class Meta:
         model =  CompanieInfo
-        fields = ['summary','sector','industry','website']
+        fields = ['summary','sector','industry','website','next_earnings_date']
  
 class CompanieFullInfoSerializer(serializers.ModelSerializer):
     
