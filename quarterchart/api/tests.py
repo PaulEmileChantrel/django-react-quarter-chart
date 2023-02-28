@@ -470,3 +470,15 @@ class CurrencyTest(TestCase):
     def test_currency_name_unique(self):
         with self.assertRaises(Exception):
             Currency.objects.create(name='US Dollar', ticker='USD2', last_updated_at=datetime.now(), value=1.0)
+    
+from .models import merge_df        
+class TestMergeDF(unittest.TestCase):
+    def test_merge_df(self):
+        old_df = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+        new_df = pd.DataFrame({'A': [5, 6], 'C': [7, 8]})
+        merged_df = merge_df(new_df, old_df)
+         
+        self.assertListEqual(list(merged_df.columns), ['A', 'B', 'C'])
+        self.assertListEqual(list(merged_df['A']), [1, 2])
+        self.assertListEqual(list(merged_df['B']), [3, 4])
+        self.assertListEqual(list(merged_df['C']), [7, 8])
