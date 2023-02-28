@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Companie,CompanieInfo,CompanieIncomeStatement,CompanieBalanceSheet,CompanieCashFlow
+from .models import Companie,CompanieInfo,CompanieIncomeStatement,CompanieBalanceSheet,CompanieCashFlow,Currency
 from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer,CompanieIncomeSerializer
 from django.db.models import Q
 
@@ -448,3 +448,25 @@ class CompanieInfoTestCase(TestCase):
         companie_info.delete()
         company = Companie.objects.get(ticker='TEST')
         self.assertFalse(company.data_was_downloaded)
+        
+        
+class CurrencyTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Currency.objects.create(name='US Dollar', ticker='USD', last_updated_at=datetime.now(), value=1.0)
+
+    def test_currency_str(self):
+        currency = Currency.objects.get(ticker='USD')
+        self.assertEqual(str(currency), 'US Dollar')
+
+    def test_currency_value(self):
+        currency = Currency.objects.get(ticker='USD')
+        self.assertEqual(currency.value, 1.0)
+
+    def test_currency_ticker_unique(self):
+        with self.assertRaises(Exception):
+            Currency.objects.create(name='Euro', ticker='USD', last_updated_at=datetime.now(), value=0.85)
+
+    def test_currency_name_unique(self):
+        with self.assertRaises(Exception):
+            Currency.objects.create(name='US Dollar', ticker='USD2', last_updated_at=datetime.now(), value=1.0)
