@@ -42,7 +42,9 @@ def get_next_earnings_date(ticker:str):
     earnings = stock.calendar_events
     
     earnings = earnings[ticker]['earnings']['earningsDate'][0]
+    
     index = earnings.find('S')
+    print(index)
     if index >0:
         earnings = earnings[:index-1]
 

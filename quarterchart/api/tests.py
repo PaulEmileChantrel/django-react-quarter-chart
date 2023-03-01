@@ -503,4 +503,32 @@ class TestMergeDF(unittest.TestCase):
         self.assertListEqual(list(merged_df['B']), [3, 4])
         self.assertListEqual(list(merged_df['C']), [7, 8])
         
+from .get_data.get_yahoo_info import get_general_yahoo_info
+
+
+class GetGeneralYahooInfoTestCase(TestCase):
+    @patch('yfinance.Ticker')
+    def test_get_general_yahoo_info(self, mock_ticker):
+        mock_ticker.return_value.fast_info = {
+            'market_cap': 100000000000
+        }
+        mock_ticker.return_value.info = {
+            'sector': 'Technology',
+            'industry': 'Software',
+            'website': 'https://example.com'
+        }
+        
+        ticker = 'AAPL'
+        expected_info = {
+            'sector': 'Technology',
+            'industry': 'Software',
+            'website': 'https://example.com'
+        }
+        expected_market_cap = 100000000000
+        
+        result_info, result_market_cap = get_general_yahoo_info(ticker)
+        
+        mock_ticker.assert_called_once_with(ticker)
+        self.assertEqual(result_info, expected_info)
+        self.assertEqual(result_market_cap, expected_market_cap)
 
