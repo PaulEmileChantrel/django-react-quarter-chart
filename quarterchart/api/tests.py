@@ -309,6 +309,18 @@ class DfToArrayTestCase(TestCase):
             '2022-10-01 00:00:00': [1000, 1100, 1200],
             'TTM': [1300, 1400, 1500]
         }, index=['Total Revenue', 'Gross Profit', 'Operating Income'])
+        self.df2 = pd.DataFrame({
+            '2022-01-01 00:00:00': [100, 200, 300],
+            '2022-03-01 00:00:00': [100, 200, 300],
+            '2022-04-01 00:00:00': [400, 500, 600],
+            '2022-06-01 00:00:00': [400, 500, 600],
+            '2022-07-01 00:00:00': [700, 800, 900],
+            '2022-09-01 00:00:00': [700, 800, 900],
+            '2022-10-01 00:00:00': [1000, 1100, 1200],
+            '2022-10-01 00:00:00': [1000, 1100, 1200],
+            'TTM': [1300, 1400, 1500]
+        }, index=['Total Revenue', 'Gross Profit', 'Operating Income'])
+
 
     def test_df_to_array_quarterly(self):
         rows = ['Total Revenue', 'Gross Profit', 'Operating Income']
@@ -316,6 +328,14 @@ class DfToArrayTestCase(TestCase):
         expected_output = [['Dates', 'Total Revenue', 'Gross Profit', 'Operating Income'], ('Q1, 2022', 100, 200, 300), ('Q2, 2022', 400, 500, 600), ('Q3, 2022', 700, 800, 900), ('Q4, 2022', 1000, 1100, 1200)]
         
         self.assertEqual(df_to_array(self.df, rows, timeframe), expected_output)
+
+    def test_df_every_quarter(self):
+       
+        rows = ['Total Revenue', 'Gross Profit', 'Operating Income']
+        timeframe = 'q'
+        expected_output = [['Dates', 'Total Revenue', 'Gross Profit', 'Operating Income'], ('Q1, 2022', 100, 200, 300), ('Q1, 2022', 100, 200, 300), ('Q2, 2022', 400, 500, 600), ('Q2, 2022', 400, 500, 600), ('Q3, 2022', 700, 800, 900), ('Q3, 2022', 700, 800, 900), ('Q4, 2022', 1000, 1100, 1200)]
+        
+        self.assertEqual(df_to_array(self.df2, rows, timeframe), expected_output)
 
     def test_df_to_array_annual(self):
         rows = ['Total Revenue', 'Gross Profit', 'Operating Income']
