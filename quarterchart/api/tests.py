@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Companie,CompanieInfo,CompanieIncomeStatement,CompanieBalanceSheet,CompanieCashFlow,Currency
+from .models import Companie,CompanieInfo,CompanieIncomeStatement,CompanieBalanceSheet,CompanieCashFlow,Currency,DailyUpdateStatus,daily_update
 from .serializers import CompanieSerializer,CompanieFullInfoSerializer, CompanieInfoSerializer,NextEarningsSerializer,CompanieIncomeSerializer
 from django.db.models import Q
 
@@ -482,3 +482,5 @@ class TestMergeDF(unittest.TestCase):
         self.assertListEqual(list(merged_df['A']), [1, 2])
         self.assertListEqual(list(merged_df['B']), [3, 4])
         self.assertListEqual(list(merged_df['C']), [7, 8])
+        
+
