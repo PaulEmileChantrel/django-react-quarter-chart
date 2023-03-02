@@ -1,10 +1,12 @@
 import React from 'react';
 import {useParams} from 'react-router-dom'
-import {Grid,Typography,Button,Link}  from '@material-ui/core';
+import {Grid,Typography,Button,Link,Item}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
-import OtherChart from './OtherChart';
+import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 
+import OtherChart from './OtherChart';
+import formatMktCp from './formatMktCap';
 
 export default function ChartPage () {
     const [dataQ,setDataQ] = useState([])
@@ -14,16 +16,28 @@ export default function ChartPage () {
     const [showQuarters,setShowQuarters] = useState(true)
     const [show,setShow] = useState(false)
     const {ticker} = useParams();
+    const [name,SetName] = useState('')
+    const [logo_link,SetLogoLink] = useState('')
 
     
 
     useEffect(()=>{
         getComapanieInfo()
+        getComapanieChart()
+        
     },[])
     function getComapanieInfo(){
+        fetch('/api/get-company-info?ticker='+ticker).then(res=>res.json())
+        .then(data=>{
+            SetName(data.name)
+            SetLogoLink(data.image_link)
+            
+        })
+    }
+    function getComapanieChart(){
         fetch('/api/get-first-company-chart?ticker='+ticker).then(res=>res.json())
         .then(data=>{
-            console.log(data)
+            
             setDataQ(data['quarter'])
             setDataA(data['annual'])
             setShowQuarters(data['time_periode']==='quarter')
@@ -46,7 +60,7 @@ export default function ChartPage () {
                 headers :{'Content-Type': 'application/json'},
                 body: JSON.stringify({time_periode:timeframe}),
             }
-            console.log(JSON.stringify({time_periode:timeframe}))
+            // console.log(JSON.stringify({time_periode:timeframe}))
             fetch('/api/update-session-time-periode',requestOptions)
             .then(res=>console.log(res))
   
@@ -54,9 +68,18 @@ export default function ChartPage () {
     
 
     return (<Grid container spacing={1}>
+        
         <Grid item xs={12} align="center">
-            <Typography component="h5" variant="h5" > {ticker} Charts</Typography>
-            <Link  href = {'/info/'+ticker} > more info</Link>
+            <Grid item xs={6} align="center" >
+                <img src={logo_link}/>
+            </Grid>
+            <Grid item xs={6} align="center" >
+                <Typography component="h5" variant="h5" > {name} Charts</Typography>
+            </Grid>
+        </Grid>
+         <Grid item xs={12} align="center">
+            
+            <Link  href = {'/info/'+ticker} > more infos</Link>
         </Grid>
         {show ?
         <Grid item xs={12} align="center">

@@ -69,7 +69,7 @@ export default function CompanieInfoPage () {
                     <td>{industry}</td>
                     <td>{marketCap}</td>
                     <td>{next_earnings}</td>
-                    <td><a href={website}>{website}</a></td>
+                    <td><a href={website} target='_blank'>{website}</a></td>
 
                 </tr>
            

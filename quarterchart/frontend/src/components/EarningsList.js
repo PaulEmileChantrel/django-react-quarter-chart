@@ -7,7 +7,7 @@ export default function EarningsList({earningsList}){
     return (
         
         earningsList.map(earnings =>{
-            console.log(earnings.id);
+            
             return <Earnings key={earnings.id}  company={earnings} />
         })
         

@@ -23,7 +23,7 @@ export default function HomePage () {
     
     
     function order_by_weeks(data) {
-        console.log(data)
+        // console.log(data)
         Date.prototype.getWeek = function() {
             const onejan = new Date(this.getFullYear(), 0, 1);
             const week = Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
@@ -69,7 +69,7 @@ export default function HomePage () {
     function loadCompanyEarningsList() {
         fetch('/api/next-earnings').then(response => response.json())
         .then(data =>order_by_weeks(data))
-        .then(data => {console.log(data),setEarningsWeeks(data)})
+        .then(data => setEarningsWeeks(data))
         .catch(error => console.log(error))
     }
     function searchCompanie(){

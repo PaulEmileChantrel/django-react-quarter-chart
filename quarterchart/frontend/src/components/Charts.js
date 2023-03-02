@@ -2,7 +2,7 @@ import React from 'react';
 import { Chart } from "react-google-charts";
 
 export default function Charts ({data,title}){
-    console.log(data)
+    // console.log(data)
     return (<>{data.length?<>
         <h1>{title}</h1>
         <Chart
