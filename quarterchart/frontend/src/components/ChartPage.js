@@ -5,6 +5,7 @@ import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 import OtherChart from './OtherChart';
 
+
 export default function ChartPage () {
     const [dataQ,setDataQ] = useState([])
     const [dataA,setDataA] = useState([])
@@ -13,6 +14,9 @@ export default function ChartPage () {
     const [showQuarters,setShowQuarters] = useState(true)
     const [show,setShow] = useState(false)
     const {ticker} = useParams();
+
+    
+
     useEffect(()=>{
         getComapanieInfo()
     },[])
@@ -47,7 +51,7 @@ export default function ChartPage () {
             .then(res=>console.log(res))
   
     }}
-
+    
 
     return (<Grid container spacing={1}>
         <Grid item xs={12} align="center">
@@ -59,37 +63,44 @@ export default function ChartPage () {
         { showQuarters ?
         <Grid item xs={12} align="center">
         
-            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
-            <Button variant="outlined" color="primary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
+            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'quarter')} style={{ margin: '1rem' }}>Quarter</Button>
+            <Button variant="outlined" color="primary" onClick={e =>updateTimeframe(e,'annual')} style={{ margin: '1rem' }}>Annual</Button>
             
         </Grid>:
         <Grid item xs={12} align="center">
         
-            <Button variant="outlined"  color="primary" onClick={e => updateTimeframe(e,'quarter')}>Quarter</Button>
-            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'annual')}>Annual</Button>
+            <Button variant="outlined"  color="primary" onClick={e => updateTimeframe(e,'quarter')} style={{ margin: '1rem' }}>Quarter</Button>
+            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'annual')} style={{ margin: '1rem' }}>Annual</Button>
             
         </Grid>
         }
         
-        <Grid item xs={12} align="center">
+        <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
         { showQuarters?
+        <>
+        <h1>Revenue, Gross Profit and Operative Income</h1>
         <Chart
             chartType="Bar"
             data={dataQ}
+            options={{title: 'Quarter'}}
             width="80%"
-            height="300px"
-            legendToggle
+            height="400px"
+            legendToggle={true}
             
-        />
-        : 
+            
+        /></>
+        : <>
+        <h1>Revenue, Gross Profit and Operative Income</h1>
         <Chart
             chartType="Bar"
             data={dataA}
             width="80%"
-            height="300px"
+            height="400px"
             legendToggle
+            options={{title: 'Annual'}}
             
         />
+        </>
         
         }
         </Grid>

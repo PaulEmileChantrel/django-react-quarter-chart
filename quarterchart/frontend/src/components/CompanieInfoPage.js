@@ -18,7 +18,11 @@ export default function CompanieInfoPage () {
     
     
     const {ticker} = useParams();
-    getComapanieInfo()
+    useEffect(() => {
+        
+        getComapanieInfo()
+    },[]);
+    
     function getComapanieInfo(){
         fetch('/api/get-company-info?ticker='+ticker).then(res=>res.json())
         .then(data=>{

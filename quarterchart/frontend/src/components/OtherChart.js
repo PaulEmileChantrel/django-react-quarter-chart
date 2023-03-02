@@ -5,18 +5,20 @@ import {useEffect,useState} from 'react'
 
 export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters}){
     const [show,setShow] = useState(false);
-    
+    const titles = ['Net Income','OpEx','Assets','Liabilities','Debts','Cash Flow','Cash','EBITDA','EPS']
     useEffect(() => {
         let ChartDataQ=[];
         let ChartDataA = [];
         otherChartDataQ.forEach((item,index)=>{
-            console.log(item)
-            ChartDataQ.push( <Charts key={index} data ={item}/>)
+            
+            
+            ChartDataQ.push( <Charts key={index} data ={item} title = {title}/>)
                 })
 
 
         otherChartDataA.forEach((item,index)=>{
-            ChartDataA.push( <Charts key={index} data ={item}/>)
+            let title = titles[index]
+            ChartDataA.push( <Charts key={index} data ={item} title = {title}/>)
                 })
         setShow(true);
     },[])
@@ -24,16 +26,18 @@ export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters
     return (<>
     
         {showQuarters?
-            <Grid item xs={12} align="center">
+            <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
                 {otherChartDataQ.map((data,id) =>{
-                    return <Charts key={id}  data={data}/>
+                    let title = titles[id]
+                    return <Charts key={id}  data={data} title = {title}/>
                 })}
 
             </Grid>
             :
-            <Grid item xs={12} align="center">
+            <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
                 {otherChartDataA.map((data,id) =>{
-                    return <Charts key={id}  data={data}/>
+                    let title = titles[id]
+                    return <Charts key={id}  data={data} title = {title}/>
                 })}
             </Grid>
             }
