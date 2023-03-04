@@ -4,12 +4,12 @@ export default function Earnings({company}) {
     
     return (
         <div>
-            <a href={'/chart/' + company.ticker}>
+            
 
                 <p>
-                    {company.ticker} | Date : {company.next_earnings_date}
+                {company.next_earnings_date} <a  href={'/chart/' + company.ticker}>{company.ticker}</a>
                 </p>
-            </a>
+            
             
             
         </div>

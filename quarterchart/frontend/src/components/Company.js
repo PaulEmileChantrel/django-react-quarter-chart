@@ -6,10 +6,10 @@ export default function Company({company}) {
     
     return (
       
-        <tr>
+        <tr >
           
           <td>
-          <a href={'/chart/' + company.ticker}>
+          <a className='removeLink' href={'/chart/' + company.ticker}>
             <div className='d-flex align-items-center'  >
               <img
                 src={'/static/images/company_logo/'+company.ticker.toLowerCase()+'.webp'}
@@ -25,17 +25,17 @@ export default function Company({company}) {
             </a>
           </td>
           <td>
-          <a href={'/chart/' + company.ticker}>
+          <a className='removeLink' href={'/chart/' + company.ticker}>
             <p className='fw-normal mb-1'>$ {formatMktCp(company.market_cap)}</p>
             </a>
           </td>
           <td>
-          <a href={'/chart/' + company.ticker}>
+          <a className='removeLink' href={'/chart/' + company.ticker}>
             <p className='fw-normal mb-1'>$ {Math.round(company.share_price*100)/100}</p>
             </a>
           </td>
           <td>
-          <a href={'/chart/' + company.ticker}>
+          <a className='removeLink' href={'/chart/' + company.ticker}>
             {company.one_day_variation==0?
               
               <p className='fw-normal mb-1 text-muted'><BiCaretRightCircle style={ { verticalAlign: 'middle' ,paddingBottom:'2px'}} /> {company.one_day_variation} %  </p>

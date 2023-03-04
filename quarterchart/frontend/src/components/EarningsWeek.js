@@ -9,7 +9,7 @@ export default function EarningsWeek({earningsWeek}){
         <MDBTable align='middle' striped bordered>
         <MDBTableHead >
             <tr >
-                <th scope='col' >Next Earnings</th>
+                <th scope='col' >Next Earnings Dates</th>
             </tr>
         </MDBTableHead>
         <MDBTableBody >

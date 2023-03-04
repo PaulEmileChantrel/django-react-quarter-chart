@@ -16,7 +16,7 @@ html,body{
     display: flex;
     
 }
-a{
+.removeLink{
     color:inherit !important;
     text-decoration: none !important;
 }

@@ -18,7 +18,7 @@ export default function CompaniesList({companies_list}){
             
             </tr>
         </MDBTableHead>
-        <MDBTableBody>
+        <MDBTableBody className='removeLink'>
             {companies_list.map(company =>{
                 return <Company key={company.id}  company={company}/>
             })}
