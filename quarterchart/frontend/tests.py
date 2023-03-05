@@ -50,3 +50,6 @@ class FrontendTestCase(TestCase):
         earnings_week = json.loads(response.content)
         self.assertTrue(len(earnings_week)==1)
         # check if the data is in the expected format and contains the expected fields
+        
+        
+

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rest_framework',
     'frontend.apps.FrontendConfig',
-     "django_apscheduler",
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
