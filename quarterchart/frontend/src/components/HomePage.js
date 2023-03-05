@@ -5,14 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import TextField  from '@material-ui/core/TextField';  
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import {Link} from 'react-router-dom';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useState,useRef,useEffect} from 'react'
 import CompaniesList from './CompaniesList';
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
 import EarningsWeek from './EarningsWeek';
 
 export default function HomePage () {
@@ -81,7 +75,8 @@ export default function HomePage () {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         };
-        fetch('/api/filterCompany?name='+name, requestOptions).then(response => response.json()).then(data => SetCompaniesList(data)).catch(error => console.log('erroR', error));
+
+        fetch('/api/filterCompany/?name='+name,requestOptions).then(response => response.json()).then(data => SetCompaniesList(data)).catch(error => console.log('erroR', error));
 
     }
     useEffect(() => {
