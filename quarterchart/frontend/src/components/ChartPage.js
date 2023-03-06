@@ -108,8 +108,7 @@ export default function ChartPage () {
             options={{title: 'Quarter'}}
             width="80%"
             height="400px"
-            legendToggle={true}
-            
+            legendToggle
             
         /></>
         : <>
