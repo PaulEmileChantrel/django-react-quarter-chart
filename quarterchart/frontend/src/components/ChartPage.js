@@ -4,7 +4,7 @@ import {Grid,Typography,Button,Link,Item}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-
+import { ReactBarChart } from './ReactBarChart';
 import OtherChart from './OtherChart';
 import formatMktCp from './formatMktCap';
 
@@ -99,6 +99,8 @@ export default function ChartPage () {
         }
         
         <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
+            <ReactBarChart/>
+
         { showQuarters?
         <>
         <h1>Revenue, Gross Profit and Operative Income</h1>
