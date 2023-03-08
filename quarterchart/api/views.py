@@ -56,18 +56,20 @@ class CreateCompanieView(APIView):
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+def convert_date(dates_col,timeframe):
+    dates = list(dates_col)
+    if timeframe == 'a':
+        
+        dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) if date!='TTM' else 'TTM' for date in dates ]
+    else:
+        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month-1)//3+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates if date!='TTM']
+    return dates
 
 def df_to_array(df,rows,timeframe):
     #df = df[df.columns[::-1]]
     df.fillna(0,inplace=True)
     head = ['Dates']+rows
-    if timeframe == 'a':
-        dates = list(df.columns)
-        
-        dates = [str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year) if date!='TTM' else 'TTM' for date in dates ]
-    else:
-        dates = list(df.columns)
-        dates = [f"Q{str((datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').month-1)//3+1)}, {str(datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').year)}" for date in dates if date!='TTM']
+    dates = convert_date(df.columns)
     row_list = [dates]
     
 

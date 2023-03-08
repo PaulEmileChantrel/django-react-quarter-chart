@@ -51,7 +51,7 @@ export const data = {
   ],
 };
 
-export function ReactBarChart() {
-  console.log(data)
-  return <Bar options={options} data={data} />;
+export function ReactBarChart({dataQ}) {
+  console.log(dataQ)
+  return <Bar options={options} data={dataQ} />;
 }
