@@ -381,8 +381,8 @@ class CompanyOtherChartDataTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(response.data['quarter'], [[], [], [], [], [], [], [], [], []])
-        self.assertEqual(response.data['annual'], [[], [], [], [], [], [], [], [], []])
+        self.assertEqual(response.data['quarter'], [{'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}])
+        self.assertEqual(response.data['annual'], [{'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}, {'datasets': [], 'labels': None}])
 
     def test_get_company_data_with_invalid_ticker(self):
         
