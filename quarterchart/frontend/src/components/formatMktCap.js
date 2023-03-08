@@ -1,4 +1,13 @@
 function formatMktCp(num) {
+    if (num<0){
+        return '-'+convertNum(num*-1)
+    }
+    else {
+        return convertNum(num)
+    }
+    }
+    
+function convertNum(num){
     if (num >= 1000000000000) {//1T
         num = Math.round(num / 10000000000)/100
         return `${num}T`
@@ -12,6 +21,7 @@ function formatMktCp(num) {
         return `${num}M`}
     else {
         return `${num}`
-    }}
-    
+    }
+
+}
 export default formatMktCp;

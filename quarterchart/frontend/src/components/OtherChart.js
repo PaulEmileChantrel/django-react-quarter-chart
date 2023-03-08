@@ -1,43 +1,31 @@
 import React from 'react';
 import {Grid,Typography,Button,Link}  from '@material-ui/core';
-import Charts from './Charts';
+
 import {useEffect,useState} from 'react'
-
+import { ReactBarChart } from './ReactBarChart';
 export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters}){
-    const [show,setShow] = useState(false);
     const titles = ['Net Income','OpEx','Assets','Liabilities','Debts','Cash Flow','Cash','EBITDA','EPS']
-    useEffect(() => {
-        let ChartDataQ=[];
-        let ChartDataA = [];
-        otherChartDataQ.forEach((item,index)=>{
-            
-            
-            ChartDataQ.push( <Charts key={index} data ={item} title = {title}/>)
-                })
-
-
-        otherChartDataA.forEach((item,index)=>{
-            let title = titles[index]
-            ChartDataA.push( <Charts key={index} data ={item} title = {title}/>)
-                })
-        setShow(true);
-    },[])
-
+    const stackeds = [false,false,false,true,false,false,false,false]
+                    
     return (<>
     
         {showQuarters?
-            <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
-                {otherChartDataQ.map((data,id) =>{
-                    let title = titles[id]
-                    return <Charts key={id}  data={data} title = {title}/>
+            <Grid item xs={8} align="center" style={{ marginTop: '3rem' }}>
+                {otherChartDataQ.map((data,item) =>{
+                    let title = titles[item]
+                    let stacked = stackeds[item]
+                    
+                    return <ReactBarChart key={item}  data={data} title = {title} stacked = {stacked}/>
                 })}
 
             </Grid>
             :
-            <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
-                {otherChartDataA.map((data,id) =>{
-                    let title = titles[id]
-                    return <Charts key={id}  data={data} title = {title}/>
+            <Grid item xs={8} align="center" style={{ marginTop: '3rem' }}>
+                {otherChartDataA.map((data,item) =>{
+                    let title = titles[item]
+                    let stacked = stackeds[item]
+                    
+                    return <ReactBarChart key={item}  data={data} title = {title} stacked = {stacked}/>
                 })}
             </Grid>
             }

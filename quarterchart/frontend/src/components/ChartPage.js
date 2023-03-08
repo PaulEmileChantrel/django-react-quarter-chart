@@ -4,7 +4,7 @@ import {Grid,Typography,Button,Link,Item}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-import { ReactBarStackChart } from './ReactBarStackChart';
+
 import {ReactBarChart} from './ReactBarChart';
 import OtherChart from './OtherChart';
 import formatMktCp from './formatMktCap';
@@ -105,19 +105,20 @@ export default function ChartPage () {
         { showQuarters?
         <>
         
-        <ReactBarChart dataQ={dataQ} title = {'Revenue, Gross Profit and Operative Income'}/>
+        <ReactBarChart data={dataQ} title = {'Revenue, Gross Profit and Operative Income'}/>
         </>
         : <>
         
-        <ReactBarChart dataQ={dataA} title = {'Revenue, Gross Profit and Operative Income'}/>
+        <ReactBarChart data={dataA} title = {'Revenue, Gross Profit and Operative Income'}/>
         
         </>
         
         }
         </Grid>
         </Grid>:null}
-        <OtherChart otherChartDataQ = {otherChartDataQ} otherChartDataA={otherChartDataA} showQuarters={showQuarters}/>
-
+        <Grid item xs={12} align="center">
+            <OtherChart otherChartDataQ = {otherChartDataQ} otherChartDataA={otherChartDataA} showQuarters={showQuarters}/>
+        </Grid>
     </Grid>)
   
 };

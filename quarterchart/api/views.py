@@ -181,36 +181,36 @@ class CompanyOtherChartData(APIView):
                 cf_a = companie_cash_flow[0].light_annual_cash_flow
                 
                 #income statement
-                chart1_q = df_to_array(inc_stmt_q,['Net Income'],'q')
-                chart1_a = df_to_array(inc_stmt_a,['Net Income'],'a')
+                chart1_q = df_to_react_chart_format(inc_stmt_q,['Net Income'],'q')
+                chart1_a = df_to_react_chart_format(inc_stmt_a,['Net Income'],'a')
 
-                chart2_q = df_to_array(inc_stmt_q,['Operating Expense'],'q')
-                chart2_a = df_to_array(inc_stmt_a,['Operating Expense'],'a')
+                chart2_q = df_to_react_chart_format(inc_stmt_q,['Operating Expense'],'q')
+                chart2_a = df_to_react_chart_format(inc_stmt_a,['Operating Expense'],'a')
                 
                 #balance sheet
-                chart3_q = df_to_array(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
-                chart3_a = df_to_array(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
+                chart3_q = df_to_react_chart_format(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
+                chart3_a = df_to_react_chart_format(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
 
-                chart4_q = df_to_array(bal_sht_q,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'q')
-                chart4_a = df_to_array(bal_sht_a,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'a')
+                chart4_q = df_to_react_chart_format(bal_sht_q,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'q')
+                chart4_a = df_to_react_chart_format(bal_sht_a,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'a')
 
-                chart5_q = df_to_array(bal_sht_q,['Total Debt'],'q')
-                chart5_a = df_to_array(bal_sht_a,['Total Debt'],'a')
+                chart5_q = df_to_react_chart_format(bal_sht_q,['Total Debt'],'q')
+                chart5_a = df_to_react_chart_format(bal_sht_a,['Total Debt'],'a')
 
                 #cash flow
-                chart6_q = df_to_array(cf_q,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'q')
-                chart6_a = df_to_array(cf_a,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'a')
+                chart6_q = df_to_react_chart_format(cf_q,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'q')
+                chart6_a = df_to_react_chart_format(cf_a,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'a')
                 
 
-                chart7_q = df_to_array(cf_q,['End Cash Position'],'q')
-                chart7_a = df_to_array(cf_a,['End Cash Position'],'a')
+                chart7_q = df_to_react_chart_format(cf_q,['End Cash Position'],'q')
+                chart7_a = df_to_react_chart_format(cf_a,['End Cash Position'],'a')
                 
                 #others (ebita and eps)
-                chart8_q = df_to_array(inc_stmt_q,['Normalized EBITDA'],'q')
-                chart8_a = df_to_array(inc_stmt_a,['Normalized EBITDA'],'a')
+                chart8_q = df_to_react_chart_format(inc_stmt_q,['Normalized EBITDA'],'q')
+                chart8_a = df_to_react_chart_format(inc_stmt_a,['Normalized EBITDA'],'a')
 
-                chart9_q = df_to_array(inc_stmt_q,['Basic EPS'],'q')
-                chart9_a = df_to_array(inc_stmt_a,['Basic EPS'],'a')
+                chart9_q = df_to_react_chart_format(inc_stmt_q,['Basic EPS'],'q')
+                chart9_a = df_to_react_chart_format(inc_stmt_a,['Basic EPS'],'a')
 
 
                 serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]

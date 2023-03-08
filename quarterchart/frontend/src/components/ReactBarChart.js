@@ -28,14 +28,24 @@ ChartJS.register(
 
 
 
-export function ReactBarChart({dataQ, title}) {
+export function ReactBarChart({data, title, stacked=false}) {
   
   const [options,setOptions] = useState({
     responsive: true,
     scales: {
+      x: {
+        stacked: stacked,
+      },
       y: {
-          ticks: {  callback : function(value,index,array) { return  formatMktCp(value) }}}},
-    
+          ticks: {  callback : function(value,index,array) { return  formatMktCp(value) }},
+          stacked: stacked,
+        
+        }
+        
+        
+    },
+          
+  
     plugins: {
       legend: {
         position: 'top',
@@ -49,6 +59,6 @@ export function ReactBarChart({dataQ, title}) {
   })
   
   
-  console.log(dataQ)
-  return <Bar options={options} data={dataQ} />;
+  console.log(stacked)
+  return <Bar options={options} data={data} />;
 }
