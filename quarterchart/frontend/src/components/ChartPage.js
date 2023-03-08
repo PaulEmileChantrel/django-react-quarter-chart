@@ -99,17 +99,17 @@ export default function ChartPage () {
         </Grid>
         }
         
-        <Grid item xs={12} align="center" style={{ marginTop: '3rem' }}>
+        <Grid item xs={8} align="center" style={{ marginTop: '3rem' }}>
             
 
         { showQuarters?
         <>
-        <h1>Revenue, Gross Profit and Operative Income</h1>
-        <ReactBarChart dataQ={dataQ}/>
+        
+        <ReactBarChart dataQ={dataQ} title = {'Revenue, Gross Profit and Operative Income'}/>
         </>
         : <>
-        <h1>Revenue, Gross Profit and Operative Income</h1>
-        <ReactBarChart dataQ={dataA}/>
+        
+        <ReactBarChart dataQ={dataA} title = {'Revenue, Gross Profit and Operative Income'}/>
         
         </>
         

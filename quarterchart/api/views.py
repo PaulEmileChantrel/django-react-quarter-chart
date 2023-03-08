@@ -102,12 +102,15 @@ def df_to_react_chart_format(df,rows,timeframe):
     
     i = 0
     datasets = []
+    len_cols = len(dates_labels)
     for row in rows:
         try:
             row_data = list(df.loc[row])
         except:
             pass
         else:
+            if len_cols != len(row_data):
+                row_data = row_data[:len_cols]#take the TTM data out
             datasets.append({'label':row,'data':row_data,'backgroundColor':colors[i]})
             i +=1
             
