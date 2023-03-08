@@ -41,7 +41,7 @@ export const data = {
     {
       label: 'Dataset 1',
       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      backgroundColor: 'rgba(255, 99, 132, 1)',
     },
     {
       label: 'Dataset 2',
@@ -52,6 +52,7 @@ export const data = {
 };
 
 export function ReactBarChart({dataQ}) {
+  console.log(data)
   console.log(dataQ)
   return <Bar options={options} data={dataQ} />;
 }

@@ -105,27 +105,12 @@ export default function ChartPage () {
         { showQuarters?
         <>
         <h1>Revenue, Gross Profit and Operative Income</h1>
-        <ReactBarChart data={dataQ}/>
-        <Chart
-            chartType="Bar"
-            data={dataQ}
-            options={{title: 'Quarter'}}
-            width="80%"
-            height="400px"
-            legendToggle
-            
-        /></>
+        <ReactBarChart dataQ={dataQ}/>
+        </>
         : <>
         <h1>Revenue, Gross Profit and Operative Income</h1>
-        <Chart
-            chartType="Bar"
-            data={dataA}
-            width="80%"
-            height="400px"
-            legendToggle
-            options={{title: 'Annual'}}
-            
-        />
+        <ReactBarChart dataQ={dataA}/>
+        
         </>
         
         }

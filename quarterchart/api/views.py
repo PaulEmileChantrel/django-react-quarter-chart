@@ -69,7 +69,7 @@ def df_to_array(df,rows,timeframe):
     #df = df[df.columns[::-1]]
     df.fillna(0,inplace=True)
     head = ['Dates']+rows
-    dates = convert_date(df.columns)
+    dates = convert_date(df.columns,timeframe)
     row_list = [dates]
     
 
@@ -86,7 +86,39 @@ def df_to_array(df,rows,timeframe):
     return serialize_data
     
                
-
+def df_to_react_chart_format(df,rows,timeframe):
+    
+    # format : {labels : [Q1,Q2,..];
+    #             datasets: [
+    #{
+    ##  label: 'Dataset 1',
+    #  data: [data1,data2,data3...],
+    #  backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    #},     }
+    
+    colors = ['rgba(83, 131, 236, 1)','rgba(202, 80, 64, 1)','rgba(234, 183, 62, 1)','rgba(71, 155, 95, 1)']
+    df.fillna(0,inplace=True)
+    dates_labels = convert_date(df.columns,timeframe)
+    
+    i = 0
+    datasets = []
+    for row in rows:
+        try:
+            row_data = list(df.loc[row])
+        except:
+            pass
+        else:
+            datasets.append({'label':row,'data':row_data,'backgroundColor':colors[i]})
+            i +=1
+            
+    if len(datasets)==0:
+        return {'labels':None, 'datasets':datasets}
+    
+    return {'labels':dates_labels, 'datasets':datasets}
+            
+    
+    
+    
 class CompanyFirstChartData(APIView):
     serializer_class = CompanieIncomeSerializer
     lookup_url_kwarg_ticker = 'ticker'
@@ -116,8 +148,8 @@ class CompanyFirstChartData(APIView):
                 
                 data_a = companie[0].light_annual_income_statement
             
-                serialize_data_q = df_to_array(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
-                serialize_data_a = df_to_array(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
+                serialize_data_q = df_to_react_chart_format(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
+                serialize_data_a = df_to_react_chart_format(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
                 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
