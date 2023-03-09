@@ -96,7 +96,9 @@ def df_to_react_chart_format(df,rows,timeframe):
     #  backgroundColor: 'rgba(255, 99, 132, 0.5)',
     #},     }
     
-    colors = ['rgba(83, 131, 236, 1)','rgba(202, 80, 64, 1)','rgba(234, 183, 62, 1)','rgba(71, 155, 95, 1)']
+    #    colors = ['rgba(83, 131, 236, 1)','rgba(202, 80, 64, 1)','rgba(234, 183, 62, 1)','rgba(71, 155, 95, 1)']
+
+    colors = ['rgba(115, 191, 250, 1)','rgba(249, 219, 87, 1)','rgba(236, 110, 87, 1)','rgba(164, 247, 138, 1)']
     df.fillna(0,inplace=True)
     dates_labels = convert_date(df.columns,timeframe)
     
@@ -151,8 +153,8 @@ class CompanyFirstChartData(APIView):
                 
                 data_a = companie[0].light_annual_income_statement
             
-                serialize_data_q = df_to_react_chart_format(data_q,['Total Revenue','Gross Profit','Operating Income'],'q')
-                serialize_data_a = df_to_react_chart_format(data_a,['Total Revenue','Gross Profit','Operating Income'],'a')
+                serialize_data_q = df_to_react_chart_format(data_q,['Total Revenue','Gross Profit','Operating Income','Net Income'],'q')
+                serialize_data_a = df_to_react_chart_format(data_a,['Total Revenue','Gross Profit','Operating Income','Net Income'],'a')
                 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
@@ -181,9 +183,9 @@ class CompanyOtherChartData(APIView):
                 cf_a = companie_cash_flow[0].light_annual_cash_flow
                 
                 #income statement
-                chart1_q = df_to_react_chart_format(inc_stmt_q,['Net Income'],'q')
-                chart1_a = df_to_react_chart_format(inc_stmt_a,['Net Income'],'a')
-
+                # chart1_q = df_to_react_chart_format(inc_stmt_q,['Net Income'],'q')
+                # chart1_a = df_to_react_chart_format(inc_stmt_a,['Net Income'],'a')
+                print(inc_stmt_a)
                 chart2_q = df_to_react_chart_format(inc_stmt_q,['Operating Expense'],'q')
                 chart2_a = df_to_react_chart_format(inc_stmt_a,['Operating Expense'],'a')
                 
@@ -213,8 +215,8 @@ class CompanyOtherChartData(APIView):
                 chart9_a = df_to_react_chart_format(inc_stmt_a,['Basic EPS'],'a')
 
 
-                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
-                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
+                serialize_data_q = [chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
+                serialize_data_a = [chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
 
 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a}
