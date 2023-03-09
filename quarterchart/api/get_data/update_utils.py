@@ -84,7 +84,7 @@ def update_all():
 
     #update_light_cash_flow()
     #update_light_balance_sheet()
-    #update_light_income_statement()
+    update_light_income_statement()
     #update_all_mkt_cap()
     #update_earnings_date()
     pass

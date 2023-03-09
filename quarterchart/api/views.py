@@ -249,5 +249,5 @@ class NextEarningsView(generics.ListAPIView):
     queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
     
 
-update_all()
+#update_all()
 #updateAfterEarninigs() 

@@ -34,10 +34,10 @@ def shrink_income_stmt(df):
     elif 'Operating Expense' in df.index:
         df.loc['Other OpEx'] = df.loc['Operating Expense']
     if 'Gross Profit' in df.index and 'Total Revenue' in df.index :
-        df.loc['Gross Margin'] = df.loc['Gross Profit'] / df.loc['Total Revenue']
+        df.loc['Gross Margin'] = df.loc['Gross Profit'] / df.loc['Total Revenue']*100
     if 'Operating Income' in df.index and 'Total Revenue' in df.index :
   
-        df.loc['Operative Margin'] = df.loc['Operating Income'] / df.loc['Total Revenue']
+        df.loc['Operative Margin'] = df.loc['Operating Income'] / df.loc['Total Revenue']*100
     return df
 
 def shrink_balance_sheet(df):
