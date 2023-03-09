@@ -58,6 +58,6 @@ export function ReactBarChart({data, title, stacked=false}) {
     },
   })
   
-  
+  console.log(data)
   return <Bar options={options} data={data} />;
 }

@@ -7,6 +7,7 @@ from django.db.models import Q
 from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInfoSerializer,CompanieFullInfoSerializer, CompanieIncomeSerializer,NextEarningsSerializer
 from datetime import datetime,date,timedelta
 from .get_data.get_yahoo_info import get_mkt_cap,get_share_price
+from .get_data.update_utils import update_all
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.filter(~Q(market_cap=0)).order_by('-market_cap')
@@ -113,8 +114,9 @@ def df_to_react_chart_format(df,rows,timeframe):
         else:
             if len_cols != len(row_data):
                 row_data = row_data[:len_cols]#take the TTM data out
-            datasets.append({'label':row,'data':row_data,'backgroundColor':colors[i]})
-            i +=1
+            if max(row_data)!=0:
+                datasets.append({'label':row,'data':row_data,'backgroundColor':colors[i]})
+                i +=1
             
     if len(datasets)==0:
         return {'labels':None, 'datasets':datasets}
@@ -183,11 +185,11 @@ class CompanyOtherChartData(APIView):
                 cf_a = companie_cash_flow[0].light_annual_cash_flow
                 
                 #income statement
-                # chart1_q = df_to_react_chart_format(inc_stmt_q,['Net Income'],'q')
-                # chart1_a = df_to_react_chart_format(inc_stmt_a,['Net Income'],'a')
-                print(inc_stmt_a)
-                chart2_q = df_to_react_chart_format(inc_stmt_q,['Operating Expense'],'q')
-                chart2_a = df_to_react_chart_format(inc_stmt_a,['Operating Expense'],'a')
+                chart1_q = df_to_react_chart_format(inc_stmt_q,['Gross Margin','Operative Margin'],'q')
+                chart1_a = df_to_react_chart_format(inc_stmt_a,['Gross Margin','Operative Margin'],'a')
+                
+                chart2_q = df_to_react_chart_format(inc_stmt_q,['Research And Development','Selling General And Administration','Other OpEx'],'q')
+                chart2_a = df_to_react_chart_format(inc_stmt_a,['Research And Development','Selling General And Administration','Other OpEx'],'a')
                 
                 #balance sheet
                 chart3_q = df_to_react_chart_format(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
@@ -215,8 +217,8 @@ class CompanyOtherChartData(APIView):
                 chart9_a = df_to_react_chart_format(inc_stmt_a,['Basic EPS'],'a')
 
 
-                serialize_data_q = [chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
-                serialize_data_a = [chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
+                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
+                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
 
 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a}
@@ -247,5 +249,5 @@ class NextEarningsView(generics.ListAPIView):
     queryset = CompanieInfo.objects.filter(next_earnings_date__gt = yesterday).order_by('next_earnings_date')
     
 
-
+update_all()
 #updateAfterEarninigs() 

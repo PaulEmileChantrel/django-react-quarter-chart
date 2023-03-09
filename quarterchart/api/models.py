@@ -37,7 +37,7 @@ def update_companies():
     companies = Companie.objects.all()
     for cpn in companies:
         ticker = cpn.ticker
-        print(ticker)
+        #print(ticker)
         try:
             mkt_cap = get_mkt_cap(ticker)
             share,var,currency = get_share_price(ticker)
@@ -261,7 +261,7 @@ class Currency(models.Model):
         return self.name
     
 def daily_update():
-    print('calling daily updates')
+    #print('calling daily updates')
     last_update = DailyUpdateStatus.objects.all()[0]
     utc=pytz.UTC
     today = datetime.datetime.now()
@@ -341,7 +341,7 @@ def updateAfterEarninigs():
     if companies.exists():
         for company in companies:
             ticker = company.ticker
-            print(ticker)
+            #print(ticker)
             try:
                 income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financial_yahoo_info2(ticker)
             except Exception as e:
