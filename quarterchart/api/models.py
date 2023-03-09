@@ -361,4 +361,4 @@ def updateAfterEarninigs():
                 company_info.next_earnings_date = next_earning
                 company_info.save()
 
-        
+#update_companies()
