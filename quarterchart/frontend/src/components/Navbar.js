@@ -9,12 +9,12 @@ function NaviBar (){
             <Navbar.Brand href="/" className="text-white">
                 <img
                 alt=""
-                src="/static/images/logo_v1.png"
-                width="50"
-                height="50"
+                src="/static/images/logo_v2.png"
+                
+                height="60"
                 className="d-inline-block align-center"
                 />{' '}
-                Quarter Charts
+                
             </Navbar.Brand>
             </Container>
         </Navbar>)
