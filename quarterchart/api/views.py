@@ -8,6 +8,7 @@ from .serializers import CompanieSerializer,CreateCompanieSerializer,CompanieInf
 from datetime import datetime,date,timedelta
 from .get_data.get_yahoo_info import get_mkt_cap,get_share_price
 from .get_data.update_utils import update_all
+import pandas as pd
 # Create your views here.
 class CompanieView(generics.ListAPIView):
     queryset = Companie.objects.filter(~Q(market_cap=0)).order_by('-market_cap')
@@ -205,9 +206,10 @@ class CompanyOtherChartData(APIView):
                 chart6_q = df_to_react_chart_format(cf_q,['Operating Cash Flow','Capital Expenditure','Free Cash Flow'],'q')
                 chart6_a = df_to_react_chart_format(cf_a,['Operating Cash Flow','Capital Expenditure','Free Cash Flow'],'a')
                 
-
-                chart7_q = df_to_react_chart_format(cf_q,['Cash At End Of Period'],'q')
-                chart7_a = df_to_react_chart_format(cf_a,['Cash At End Of Period'],'a')
+                df_q = pd.concat([cf_q,bal_sht_q])
+                df_a = pd.concat([cf_a,bal_sht_a])
+                chart7_q = df_to_react_chart_format(df_q,['Cash At End Of Period','Total Debt'],'q')
+                chart7_a = df_to_react_chart_format(df_a,['Cash At End Of Period','Total Debt'],'a')
                 
                 chart5_q = df_to_react_chart_format(bal_sht_q,['Total Debt'],'q')
                 chart5_a = df_to_react_chart_format(bal_sht_a,['Total Debt'],'a')
@@ -221,8 +223,8 @@ class CompanyOtherChartData(APIView):
                 chart9_a = df_to_react_chart_format(inc_stmt_a,['EPS'],'a')
 
 
-                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart6_q,chart7_q,chart5_q,chart8_q,chart9_q]
-                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart6_a,chart7_a,chart5_a,chart8_a,chart9_a]
+                serialize_data_q = [chart1_q,chart2_q,chart6_q,chart8_q,chart3_q,chart4_q,chart7_q,chart9_q]
+                serialize_data_a = [chart1_a,chart2_a,chart6_a,chart8_a,chart3_a,chart4_a,chart7_a,chart9_a]
 
 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a}

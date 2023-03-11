@@ -3,7 +3,7 @@ import {Grid,Typography,Button,Link}  from '@material-ui/core';
 
 import { ReactBarChart } from './ReactBarChart';
 export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters,timeRange}){
-    const titles = ['Margin (%)','Operating Expense','Assets Vs Liabilities','Liabilities','Cash Flow','Cash Position','Debts','EBITDA','EPS']
+    const titles = ['Margin (%)','Operating Expense','Cash Flow','EBITDA','Assets Vs Liabilities','Liabilities','Cash Position','EPS']
     const stackeds = [false,true,false,true,false,false,false,false]
                     
     return (<>
