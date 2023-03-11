@@ -1,7 +1,6 @@
 import React from 'react';
 import {Grid,Typography,Button,Link}  from '@material-ui/core';
 
-import {useEffect,useState} from 'react'
 import { ReactBarChart } from './ReactBarChart';
 export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters}){
     const titles = ['Margin (%)','Operating Expense','Assets Vs Liabilities','Liabilities','Cash Flow','Cash Position','Debts','EBITDA','EPS']
