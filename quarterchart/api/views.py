@@ -155,8 +155,8 @@ class CompanyFirstChartData(APIView):
                 
                 data_a = companie[0].light_annual_income_statement
             
-                serialize_data_q = df_to_react_chart_format(data_q,['Total Revenue','Gross Profit','Operating Income','Net Income'],'q')
-                serialize_data_a = df_to_react_chart_format(data_a,['Total Revenue','Gross Profit','Operating Income','Net Income'],'a')
+                serialize_data_q = df_to_react_chart_format(data_q,['Revenue','Gross Profit','Operating Income','Net Income'],'q')
+                serialize_data_a = df_to_react_chart_format(data_a,['Revenue','Gross Profit','Operating Income','Net Income'],'a')
                 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a,'time_periode':time_periode}
                 return Response(data, status=status.HTTP_200_OK)
@@ -188,37 +188,39 @@ class CompanyOtherChartData(APIView):
                 chart1_q = df_to_react_chart_format(inc_stmt_q,['Gross Margin','Operative Margin'],'q')
                 chart1_a = df_to_react_chart_format(inc_stmt_a,['Gross Margin','Operative Margin'],'a')
                 
-                chart2_q = df_to_react_chart_format(inc_stmt_q,['Research And Development','Selling General And Administration','Other OpEx'],'q')
-                chart2_a = df_to_react_chart_format(inc_stmt_a,['Research And Development','Selling General And Administration','Other OpEx'],'a')
+                chart2_q = df_to_react_chart_format(inc_stmt_q,['Research And Development Expenses','Selling General And Administrative Expenses','Selling And Marketing Expenses','General And Administrative Expenses','Other Expenses'],'q')
+                chart2_a = df_to_react_chart_format(inc_stmt_a,['Research And Development Expenses','Selling General And Administrative Expenses','Selling And Marketing Expenses','General And Administrative Expenses','Other Expenses'],'a')
                 
                 #balance sheet
-                chart3_q = df_to_react_chart_format(bal_sht_q,['Current Assets','Total Non Current Assets'],'q')
-                chart3_a = df_to_react_chart_format(bal_sht_a,['Current Assets','Total Non Current Assets'],'a')
+                chart3_q = df_to_react_chart_format(bal_sht_q,['Total Assets','Total Liabilities'],'q')
+                chart3_a = df_to_react_chart_format(bal_sht_a,['Total Assets','Total Liabilities'],'a')
 
                 chart4_q = df_to_react_chart_format(bal_sht_q,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'q')
                 chart4_a = df_to_react_chart_format(bal_sht_a,['Total Liabilities Net Minority Interest', 'Stockholders Equity'],'a')
 
+                
+                #cash flow
+                chart6_q = df_to_react_chart_format(cf_q,['Operating Cash Flow','Capital Expenditure','Free Cash Flow'],'q')
+                chart6_a = df_to_react_chart_format(cf_a,['Operating Cash Flow','Capital Expenditure','Free Cash Flow'],'a')
+                
+
+                chart7_q = df_to_react_chart_format(cf_q,['Cash At End Of Period'],'q')
+                chart7_a = df_to_react_chart_format(cf_a,['Cash At End Of Period'],'a')
+                
                 chart5_q = df_to_react_chart_format(bal_sht_q,['Total Debt'],'q')
                 chart5_a = df_to_react_chart_format(bal_sht_a,['Total Debt'],'a')
 
-                #cash flow
-                chart6_q = df_to_react_chart_format(cf_q,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'q')
-                chart6_a = df_to_react_chart_format(cf_a,['Investing Cash Flow', 'Operating Cash Flow','Free Cash Flow','Financing Cash Flow'],'a')
-                
-
-                chart7_q = df_to_react_chart_format(cf_q,['End Cash Position'],'q')
-                chart7_a = df_to_react_chart_format(cf_a,['End Cash Position'],'a')
                 
                 #others (ebita and eps)
-                chart8_q = df_to_react_chart_format(inc_stmt_q,['Normalized EBITDA'],'q')
-                chart8_a = df_to_react_chart_format(inc_stmt_a,['Normalized EBITDA'],'a')
+                chart8_q = df_to_react_chart_format(inc_stmt_q,['EBITDA'],'q')
+                chart8_a = df_to_react_chart_format(inc_stmt_a,['EBITDA'],'a')
 
-                chart9_q = df_to_react_chart_format(inc_stmt_q,['Basic EPS'],'q')
-                chart9_a = df_to_react_chart_format(inc_stmt_a,['Basic EPS'],'a')
+                chart9_q = df_to_react_chart_format(inc_stmt_q,['EPS'],'q')
+                chart9_a = df_to_react_chart_format(inc_stmt_a,['EPS'],'a')
 
 
-                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart5_q,chart6_q,chart7_q,chart8_q,chart9_q]
-                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart5_a,chart6_a,chart7_a,chart8_a,chart9_a]
+                serialize_data_q = [chart1_q,chart2_q,chart3_q,chart4_q,chart6_q,chart7_q,chart5_q,chart8_q,chart9_q]
+                serialize_data_a = [chart1_a,chart2_a,chart3_a,chart4_a,chart6_a,chart7_a,chart5_a,chart8_a,chart9_a]
 
 
                 data = {'quarter': serialize_data_q,'annual': serialize_data_a}
@@ -251,3 +253,4 @@ class NextEarningsView(generics.ListAPIView):
 
 #update_all()
 #updateAfterEarninigs() 
+#reset_companies()

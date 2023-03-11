@@ -1,6 +1,7 @@
 from django.db import models
 from picklefield.fields import PickledObjectField
 from .get_data.get_yahoo_info import get_general_yahoo_info2,get_financial_yahoo_info2,get_mkt_cap,get_share_price,get_next_earnings_date
+from .get_data.get_financial_data import get_financials
 import datetime
 from config import API_KEY
 import pytz
@@ -91,7 +92,7 @@ def download_info(companieModel):
         info_downloaded = True
 
     try:
-        income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financial_yahoo_info2(companieModel.ticker)
+        income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financials(companieModel.ticker)
         
     except Exception as e:
         
@@ -333,7 +334,32 @@ def update_financial_info(ticker,income_stmt,quarterly_income_stmt,balance_sheet
     else:
         return True
     
+def reset_companies():
+    companies = Companie.objects.all()
     
+    for i,company in enumerate(companies):
+        company_info = CompanieInfo.objects.filter(name=company)
+        if company_info.exists():
+         company_info.delete()
+        
+        income_stmt = CompanieIncomeStatement.objects.filter(name=company)
+        if income_stmt.exists():
+            income_stmt.delete()
+        
+        balance_sht = CompanieBalanceSheet.objects.filter(name=company)
+        if balance_sht.exists():
+            balance_sht.delete()
+        
+        cashflow = CompanieCashFlow.objects.filter(name=company)
+        if cashflow.exists():
+            cashflow.delete()
+            
+        company.data_was_downloaded = False
+        company.save()
+        
+        
+        
+        
 def updateAfterEarninigs():
     yesterday_ = datetime.date.today() - datetime.timedelta(days=1)
     companies = CompanieInfo.objects.filter(next_earnings_date__lt = yesterday_) #lower than yesterday give us more safety knowing the earnings are available
@@ -362,3 +388,10 @@ def updateAfterEarninigs():
                 company_info.save()
 
 #update_companies()
+
+
+
+        
+
+  
+        

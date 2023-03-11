@@ -21,7 +21,7 @@ def api_call(currency):
    return result
 
 def shrink_income_stmt(df):
-    rows = set(['Revenue','Gross Profit','Operating Income','Operating Expenses','Net Income','EPS','EBITDA','Research And Development Expenses','Selling General And Administration Expenses','Gross Profit Ratio','Operating Income Ratio','Other Expenses'])
+    rows = set(['Revenue','Gross Profit','Operating Income','Operating Expenses','Net Income','EPS','EBITDA','Research And Development Expenses','Selling General And Administrative Expenses','Selling And Marketing Expenses','General And Administrative Expenses','Gross Profit Ratio','Operating Income Ratio','Other Expenses'])
     rows = list(rows.intersection(set(df.index)))
     df = df.loc[rows]
     #print(df)

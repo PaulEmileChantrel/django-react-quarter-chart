@@ -4,7 +4,8 @@ import requests
 import pandas as pd
 import json
 from config import FINANCIAL_MODELLING_API_KEY
-from get_yahoo_info import transform_df
+from .get_yahoo_info import transform_df
+
 API_KEY = FINANCIAL_MODELLING_API_KEY
 api_url = 'https://financialmodelingprep.com/api/v3'
 
@@ -58,7 +59,7 @@ def get_cash_flow(ticker):
     rename_dict = {}
     annual_df = clean_df(annual_df,rename_dict)
     quarter_df = clean_df(quarter_df,rename_dict)
-    print(annual_df) 
+    
     return annual_df, quarter_df
 
 
@@ -69,4 +70,5 @@ def get_financials(ticker):
     
     return annual_income_stmt,quarter_income_stmt,annual_balance_st,quarter_balance_st,annual_cashflow,quarter_cashflow
 if __name__ == '__main__':
-    get_cash_flow('AAPL')
+    a,q = get_income_statement('TSLA')
+    print(a)
