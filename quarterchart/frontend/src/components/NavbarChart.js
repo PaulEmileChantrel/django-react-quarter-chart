@@ -1,17 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import {BrowserRouter as Router, Route, Routes, Link, Redirect,useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 
-function NaviBar (){
-    //const [ticker,setTicker] = useState('')
-    let {ticker} = useParams();
-    useEffect(()=>{
-        
-        console.log(ticker)
-    },[])
-    
+function NaviBarChart (){
+    const {ticker} = useParams();
     return (<Navbar bg="dark" variant="dark">
             <Container>
             <Navbar.Brand href="/" className="text-white">
@@ -24,15 +18,15 @@ function NaviBar (){
                 />{' '}
                 
             </Navbar.Brand>
-            <Nav className="me-auto" activeKey='/'>
+            <Nav className="me-auto" activeKey={"/info/"+ticker}>
                 <Nav.Link href="/">Home</Nav.Link>
-                
-                
+                <Nav.Link href={"/chart/"+ticker}>{ticker} Charts</Nav.Link>
+                <Nav.Link href={"/info/"+ticker}>More Infos</Nav.Link>
             </Nav>
             </Container>
         </Navbar>)
 }
 
-export default NaviBar;
+export default NaviBarChart;
 
 
