@@ -6,39 +6,67 @@ import json
 from config import FINANCIAL_MODELLING_API_KEY
 from get_yahoo_info import transform_df
 API_KEY = FINANCIAL_MODELLING_API_KEY
-api_url = 'https://financialmodelingprep.com/api/v3/'
+api_url = 'https://financialmodelingprep.com/api/v3'
 
 
 
-def clean_inc_stmt_df(df):
+def clean_df(df,rename_dict):
     #rotate and change name 
     df = transform_df(df,date_col='date') 
     #renaming index row 
-    df.rename(index = {'Revenue':'Total Revenue','Operating Expenses':'Operating Expense','Research And Development Expenses':'Research And Development','Selling General And Administrative Expenses':'Selling General And Administration','Ebitda':'Normalized EBITDA','Eps':'Basic EPS','Other Expenses':'Other OpEx'},inplace = True)
+    df.rename(index = rename_dict,inplace = True)
     #reverse cols
     return df[df.columns[::-1]]
 
 def get_income_statement(ticker):
     
-    annual_url = f'{api_url}income-statement/{ticker}?limit=120&apikey={FINANCIAL_MODELLING_API_KEY}' #max(38y?,company_max) years of data
-    quarter_url = f'{api_url}income-statement/{ticker}?period=quarter&limit=400&apikey={FINANCIAL_MODELLING_API_KEY}'
+    annual_url = f'{api_url}/income-statement/{ticker}?limit=120&apikey={FINANCIAL_MODELLING_API_KEY}' #max(38y?,company_max) years of data
+    quarter_url = f'{api_url}/income-statement/{ticker}?period=quarter&limit=400&apikey={FINANCIAL_MODELLING_API_KEY}'
    
     annual_df = pd.read_json(annual_url)
     quarter_df = pd.read_json(quarter_url)
     
-    annual_df = clean_inc_stmt_df(annual_df)
-    quarter_df = clean_inc_stmt_df(quarter_df)
+    rename_dict = {'Ebitda':'EBITDA','Eps':'EPS'}
+    annual_df = clean_df(annual_df,rename_dict)
+    quarter_df = clean_df(quarter_df,rename_dict)
     
     return annual_df, quarter_df
     
-    
-    
+
 
 def get_balance_sheet(ticker):
-    pass
+    annual_url = f'{api_url}/balance-sheet-statement/{ticker}?limit=120&apikey={FINANCIAL_MODELLING_API_KEY}' #max(38y?,company_max) years of data
+    quarter_url = f'{api_url}/balance-sheet-statement/{ticker}?period=quarter&limit=400&apikey={FINANCIAL_MODELLING_API_KEY}'
+   
+    annual_df = pd.read_json(annual_url)
+    quarter_df = pd.read_json(quarter_url)
+    
+    
+    rename_dict = {}
+    annual_df = clean_df(annual_df,rename_dict)
+    quarter_df = clean_df(quarter_df,rename_dict)
+       
+    return annual_df, quarter_df
 
 def get_cash_flow(ticker):
-    pass
+    annual_url = f'{api_url}/cash-flow-statement/{ticker}?limit=120&apikey={FINANCIAL_MODELLING_API_KEY}' #max(38y?,company_max) years of data
+    quarter_url = f'{api_url}/cash-flow-statement/{ticker}?period=quarter&limit=400&apikey={FINANCIAL_MODELLING_API_KEY}'
+   
+    annual_df = pd.read_json(annual_url)
+    quarter_df = pd.read_json(quarter_url)
+    
+    rename_dict = {}
+    annual_df = clean_df(annual_df,rename_dict)
+    quarter_df = clean_df(quarter_df,rename_dict)
+    print(annual_df) 
+    return annual_df, quarter_df
 
+
+def get_financials(ticker):
+    annual_income_stmt,quarter_income_stmt = get_income_statement(ticker)
+    annual_balance_st,quarter_balance_st = get_balance_sheet(ticker)
+    annual_cashflow,quarter_cashflow = get_cash_flow(ticker)
+    
+    return annual_income_stmt,quarter_income_stmt,annual_balance_st,quarter_balance_st,annual_cashflow,quarter_cashflow
 if __name__ == '__main__':
-    get_income_statement('AAPL')
+    get_cash_flow('AAPL')

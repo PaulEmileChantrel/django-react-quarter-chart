@@ -21,7 +21,7 @@ def api_call(currency):
    return result
 
 def shrink_income_stmt(df):
-    rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA','Research And Development','Selling General And Administration','Gross Profit Ratio','Operating Income Ratio','Other OpEx'])
+    rows = set(['Revenue','Gross Profit','Operating Income','Operating Expenses','Net Income','EPS','EBITDA','Research And Development Expenses','Selling General And Administration Expenses','Gross Profit Ratio','Operating Income Ratio','Other Expenses'])
     rows = list(rows.intersection(set(df.index)))
     df = df.loc[rows]
     #print(df)
@@ -33,14 +33,14 @@ def shrink_income_stmt(df):
     return df
 
 def shrink_balance_sheet(df):
-    rows = set(['Total Assets','Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities Net Minority Interest','Stockholders Equity'])
+    rows = set(['Total Assets','Total Current Assets','Total Non Current Assets',"Total Debt",'Total Liabilities','Total Stockholders Equity'])
     rows = list(rows.intersection(set(df.index)))
     return df.loc[rows]
     
     
 
 def shrink_cashflow(df):
-    rows = set(['Operating Cash Flow','Investing Cash Flow','Financing Cash Flow','Beginning Cash Position','End Cash Position','Free Cash Flow'])
+    rows = set(['Operating Cash Flow','Capital Expenditure','Free Cash Flow','Cash At End Of Period'])
     rows = list(rows.intersection(set(df.index)))
     return df.loc[rows]
 
