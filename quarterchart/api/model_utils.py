@@ -21,23 +21,15 @@ def api_call(currency):
    return result
 
 def shrink_income_stmt(df):
-    rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA','Research And Development','Selling General And Administration'])
+    rows = set(['Total Revenue','Gross Profit','Operating Income','Operating Expense','Net Income','Basic EPS','Normalized EBITDA','Research And Development','Selling General And Administration','Gross Profit Ratio','Operating Income Ratio','Other OpEx'])
     rows = list(rows.intersection(set(df.index)))
     df = df.loc[rows]
     #print(df)
-    if 'Operating Expense' in df.index and 'Research And Development' in df.index and 'Selling General And Administration' in df.index:
-        df.loc['Other OpEx'] = df.loc['Operating Expense'] - df.loc['Research And Development']- df.loc['Selling General And Administration']
-    elif 'Operating Expense' in df.index and 'Research And Development' in df.index:
-        df.loc['Other OpEx'] = df.loc['Operating Expense'] - df.loc['Research And Development']
-    elif 'Operating Expense' in df.index and 'Selling General And Administration' in df.index:
-        df.loc['Other OpEx'] = df.loc['Operating Expense'] - df.loc['Selling General And Administration']
-    elif 'Operating Expense' in df.index:
-        df.loc['Other OpEx'] = df.loc['Operating Expense']
-    if 'Gross Profit' in df.index and 'Total Revenue' in df.index :
-        df.loc['Gross Margin'] = df.loc['Gross Profit'] / df.loc['Total Revenue']*100
-    if 'Operating Income' in df.index and 'Total Revenue' in df.index :
-  
-        df.loc['Operative Margin'] = df.loc['Operating Income'] / df.loc['Total Revenue']*100
+    
+    if 'Gross Profit Ratio' in df.index  :
+        df.loc['Gross Margin'] = df.loc['Gross Profit Ratio']*100
+    if 'Operating Income Ratio' in df.index :
+        df.loc['Operative Margin'] = df.loc['Operating Income Ratio'] *100
     return df
 
 def shrink_balance_sheet(df):
