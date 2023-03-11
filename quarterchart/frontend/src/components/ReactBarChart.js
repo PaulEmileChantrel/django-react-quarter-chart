@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 
 import {
@@ -23,12 +23,17 @@ ChartJS.register(
   Legend
 );
 
+import formatDisplayedData from './formatDisplayedData';
 
 
 
 
-
-export function ReactBarChart({data, title, stacked=false}) {
+export function ReactBarChart({data, title, timeRange,stacked}) {
+  
+  const [displayedData,setDisplayedData] = useState(formatDisplayedData(data,timeRange))
+  useEffect(() => {
+    setDisplayedData(formatDisplayedData(data,timeRange))
+  },[timeRange])
   
   const [options,setOptions] = useState({
     responsive: true,
@@ -58,6 +63,6 @@ export function ReactBarChart({data, title, stacked=false}) {
     },
   })
   
-  console.log(data)
-  return <Bar options={options} data={data} />;
+  //console.log(data)
+  return <Bar options={options} data={displayedData} />;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import {Grid,Typography,Button,Link}  from '@material-ui/core';
 
 import { ReactBarChart } from './ReactBarChart';
-export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters}){
+export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters,timeRange}){
     const titles = ['Margin (%)','Operating Expense','Assets Vs Liabilities','Liabilities','Cash Flow','Cash Position','Debts','EBITDA','EPS']
     const stackeds = [false,true,false,true,false,false,false,false]
                     
@@ -16,7 +16,7 @@ export default function OtherChart({otherChartDataQ,otherChartDataA,showQuarters
                     
                     if (data.datasets.length){
                         return (<Grid key={item+1000} item xs={12} align="center" style={{ marginTop: '3rem' }}> 
-                                <ReactBarChart key={item}  data={data} title = {title} stacked = {stacked} />
+                                <ReactBarChart key={item}  data={data} title = {title} stacked = {stacked} timeRange = {timeRange}/>
                         </Grid>)
                     }
                 })}

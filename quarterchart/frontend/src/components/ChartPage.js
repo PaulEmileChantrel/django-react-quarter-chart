@@ -1,6 +1,6 @@
 import React from 'react';
 import {useParams} from 'react-router-dom'
-import {Grid,Typography,Button,Link,Item}  from '@material-ui/core';
+import {Grid,Typography,Button,Link,ButtonGroup,Item}  from '@material-ui/core';
 import {useState,useRef,useEffect} from 'react'
 import { Chart } from "react-google-charts";
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
@@ -20,6 +20,8 @@ export default function ChartPage () {
     const [name,SetName] = useState('')
     const [logo_link,SetLogoLink] = useState('')
 
+    const [timeRange, setTimeRange] = useState(4);//start at 0
+
     
 
     useEffect(()=>{
@@ -27,6 +29,10 @@ export default function ChartPage () {
         getComapanieChart()
         
     },[])
+
+    function handleTimeRangeChange(newTimeRange){
+        setTimeRange(newTimeRange);
+    }
     function getComapanieInfo(){
         fetch('/api/get-company-info?ticker='+ticker).then(res=>res.json())
         .then(data=>{
@@ -55,6 +61,7 @@ export default function ChartPage () {
     function updateTimeframe(e,timeframe){
         if ((timeframe==='annual' && showQuarters)||(timeframe=== 'quarter' && !showQuarters)){
             setShowQuarters(!showQuarters)
+            handleTimeRangeChange(4)
 
             const requestOptions = {
                 method: 'PATCH',
@@ -64,6 +71,9 @@ export default function ChartPage () {
             // console.log(JSON.stringify({time_periode:timeframe}))
             fetch('/api/update-session-time-periode',requestOptions)
             .then(res=>console.log(res))
+
+            
+
   
     }}
     
@@ -84,20 +94,58 @@ export default function ChartPage () {
         </Grid>
         {show ?
         <Grid item xs={12} align="center">
-        { showQuarters ?
+        
         <Grid item xs={12} align="center">
         
-            <Button variant="contained"  color="primary" onClick={e => updateTimeframe(e,'quarter')} style={{ margin: '1rem' }}>Quarter</Button>
-            <Button variant="outlined" color="primary" onClick={e =>updateTimeframe(e,'annual')} style={{ margin: '1rem' }}>Annual</Button>
-            
-        </Grid>:
-        <Grid item xs={12} align="center">
-        
-            <Button variant="outlined"  color="primary" onClick={e => updateTimeframe(e,'quarter')} style={{ margin: '1rem' }}>Quarter</Button>
-            <Button variant="contained" color="primary" onClick={e =>updateTimeframe(e,'annual')} style={{ margin: '1rem' }}>Annual</Button>
+            <Button variant={showQuarters? "contained":"outlined"}  color="primary" onClick={e => updateTimeframe(e,'quarter')} style={{ margin: '1rem' }}>Quarter</Button>
+            <Button variant={showQuarters? "outlined":"contained"} color="primary" onClick={e =>updateTimeframe(e,'annual')} style={{ margin: '1rem' }}>Annual</Button>
             
         </Grid>
-        }
+        {showQuarters?
+        <ButtonGroup variant="outlined" color="primary">
+        <Button
+            variant = {timeRange === 4 ? "contained" : ""}
+            onClick={() => handleTimeRangeChange(4)}
+        >1Y </Button>
+        <Button
+          variant = {timeRange === 8 ? "contained" : ""}
+          onClick={() => handleTimeRangeChange(8)}
+        >2Y</Button>
+        <Button
+          variant = {timeRange === 16 ? "contained" : ""}
+          onClick={() => handleTimeRangeChange(16)}
+        >4Y</Button>
+        <Button
+          variant = {timeRange === 1000 ? "contained" : ""}
+          onClick={() => handleTimeRangeChange(1000)}
+        >MAX</Button>
+      </ButtonGroup>:
+      <ButtonGroup variant="outlined" color="primary">
+      <Button
+        variant = {timeRange === 4 ? "contained" : ""}
+        onClick={() => handleTimeRangeChange(4)}
+      >
+        5Y
+      </Button>
+      <Button
+        variant = {timeRange === 9 ? "contained" : ""}
+        onClick={() => handleTimeRangeChange(9)}
+      >
+        10Y
+      </Button>
+      <Button
+        variant = {timeRange === 14 ? "contained" : ""}
+        onClick={() => handleTimeRangeChange(14)}
+      >
+        15Y
+      </Button>
+      <Button
+        variant = {timeRange === 1000 ? "contained" : ""}
+        onClick={() => handleTimeRangeChange(1000)}
+      > MAX
+      </Button>
+    </ButtonGroup>
+    }
         
         <Grid item xs={8} align="center" style={{ marginTop: '3rem' }}>
             
@@ -105,11 +153,11 @@ export default function ChartPage () {
         { showQuarters?
         <>
         
-        <ReactBarChart data={dataQ} title = {'Revenue, Gross Profit and Operative Income'}/>
+        <ReactBarChart data={dataQ} timeRange = {timeRange} title = {'Revenue, Gross Profit and Operative Income'}/>
         </>
         : <>
         
-        <ReactBarChart data={dataA} title = {'Revenue, Gross Profit and Operative Income'}/>
+        <ReactBarChart data={dataA} timeRange = {timeRange} title = {'Revenue, Gross Profit and Operative Income'}/>
         
         </>
         
@@ -117,7 +165,7 @@ export default function ChartPage () {
         </Grid>
         </Grid>:null}
         <Grid item xs={12} align="center">
-            <OtherChart otherChartDataQ = {otherChartDataQ} otherChartDataA={otherChartDataA} showQuarters={showQuarters}/>
+            <OtherChart otherChartDataQ = {otherChartDataQ} otherChartDataA={otherChartDataA} showQuarters={showQuarters} timeRange = {timeRange}/>
         </Grid>
     </Grid>)
   

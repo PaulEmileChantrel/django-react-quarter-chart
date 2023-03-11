@@ -91,11 +91,13 @@ def df_to_react_chart_format(df,rows,timeframe):
     
     # format : {labels : [Q1,Q2,..];
     #             datasets: [
-    #{
-    ##  label: 'Dataset 1',
-    #  data: [data1,data2,data3...],
-    #  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    #},     }
+    #                   {
+    ##                  label: 'Dataset 1',
+    #                   data: [data1,data2,data3...],
+    #                   backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    #                      },     
+    #                   {...   
+    #                    }]
     
     #    colors = ['rgba(83, 131, 236, 1)','rgba(202, 80, 64, 1)','rgba(234, 183, 62, 1)','rgba(71, 155, 95, 1)']
 
