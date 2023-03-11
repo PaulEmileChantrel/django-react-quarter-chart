@@ -129,18 +129,22 @@ def get_financial_yahoo_info(ticker:str)-> dict:
     #print(stock.get_income_stmt())
     return income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow
 
-def transform_df(df:pd.DataFrame)-> pd.DataFrame:
+def transform_df(df:pd.DataFrame,date_col:str = 'asOfDate')-> pd.DataFrame:
     if isinstance(df,str):
         return df
     df = df.T
-    df.columns = list(df.loc['asOfDate'])
-    print(df.loc['periodType'])
+    df.columns = list(df.loc[date_col])
+    #print(df.loc['periodType'])
     if df.iloc[1,-1:].values[0] == 'TTM':
         df.columns = [*df.columns[:-1], 'TTM']
         #df.drop(columns = [col[0]],inplace=True)# dropping cols with TTM
         #df.rename(columns={col[0]:'TTM'}, inplace=True)
     #print(df.iloc[1,-1:].index)
+    
+    
     df.rename(index = lambda s : re.sub("([a-z])([A-Z])","\g<1> \g<2>",s), inplace=True)
+    df.rename(index = lambda s : s[0].upper()+s[1:], inplace=True)
+    
     return df
 
 def get_financial_yahoo_info2(ticker:str)-> list:
