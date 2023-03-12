@@ -258,3 +258,5 @@ class NextEarningsView(generics.ListAPIView):
 #update_all()
 #updateAfterEarninigs() 
 #reset_companies()
+from .load_companies import load_companies
+#load_companies()

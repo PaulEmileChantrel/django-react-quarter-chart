@@ -7,7 +7,7 @@ from config import API_KEY
 import pytz
 from .model_utils import *
 import pdb
-
+import traceback
 def convertInUSD(currency):
    #1) check db for currency value
    #2) if currency value is not in db, get it from api
@@ -95,8 +95,8 @@ def download_info(companieModel):
         income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow = get_financials(companieModel.ticker)
         
     except Exception as e:
-        
-        print('error : ',e)
+        traceback.print_exc()
+        print('error getting financials : ',e)
     else:
         light_a_income_stmt = shrink_income_stmt(income_stmt)
         light_q_income_stmt = shrink_income_stmt(quarterly_income_stmt)

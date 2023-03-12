@@ -9,7 +9,7 @@ from .get_yahoo_info import transform_df
 API_KEY = FINANCIAL_MODELLING_API_KEY
 api_url = 'https://financialmodelingprep.com/api/v3'
 
-
+#https://financialmodelingprep.com/api/v3/income-statement/AAPL/?limit=120&apikey=
 
 def clean_df(df,rename_dict):
     #rotate and change name 
@@ -26,6 +26,7 @@ def get_income_statement(ticker):
    
     annual_df = pd.read_json(annual_url)
     quarter_df = pd.read_json(quarter_url)
+    print('df is ',annual_df)
     
     rename_dict = {'Ebitda':'EBITDA','Eps':'EPS'}
     annual_df = clean_df(annual_df,rename_dict)
